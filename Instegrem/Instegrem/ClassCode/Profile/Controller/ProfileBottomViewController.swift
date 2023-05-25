@@ -20,7 +20,6 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .red
         collectionView.collectionViewLayout = createLayout()
         layoutCollection()
         collectionView.register(UINib(nibName: "ProfileBottomCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ProfileBottomCollectionViewCell")
@@ -41,13 +40,13 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
     
     func createLayout() -> UICollectionViewLayout{
         print("Child\(view.frame)")
-        let itemWidth = (view.frame.width - 3) / 3
+        let itemWidth = (view.frame.width - 4.5) / 3
         let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth), heightDimension: .absolute(itemWidth))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-//        item.contentInsets = NSDirectionalEdgeInsets(top: 1, leading: <#T##CGFloat#>, bottom: <#T##CGFloat#>, trailing: <#T##CGFloat#>)
+
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(1/3))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.interItemSpacing = .fixed(1)
+        group.interItemSpacing = .fixed(1.5)
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 1
         let layout = UICollectionViewCompositionalLayout(section: section)

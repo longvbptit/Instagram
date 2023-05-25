@@ -36,6 +36,11 @@ class ProfileViewController: UIViewController {
         }
     }
     
+    var isHorizontalBottomScroll: Bool = false
+    var previosSelectedIndexPath: IndexPath?
+    
+    var window: UIWindow!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         settingUI()
@@ -43,13 +48,13 @@ class ProfileViewController: UIViewController {
         layoutOverlayScrollView()
         horizontalContainerView.delegate = self
         setupStoryCollection()
-        
+//        tabBarController?.tabBar.isHidden = true
     }
     
     func settingUI() {
         
         indicator = IGActivityIndicator(frame: avatarImage.frame, addWidthAndHeight: 4)
-        topView.layer.addSublayer(indicator)
+//        topView.layer.addSublayer(indicator)
         avatarImage.clipsToBounds = true
         avatarImage.layer.cornerRadius = 40
         indicator.addAnimation()
@@ -81,6 +86,7 @@ class ProfileViewController: UIViewController {
         firstLeftButton.setTitle("bao_longgg", for: .normal)
         firstLeftButton.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         firstLeftButton.setTitleColor(UIColor.black, for: .normal)
+        firstLeftButton.addTarget(self, action: #selector(buttonUserTapped(_:)), for: .touchUpInside)
         
         let secondLeftButton = UIButton()
         secondLeftButton.setImage(UIImage(named: "ic-arrow_down"), for: .normal)
@@ -113,15 +119,13 @@ class ProfileViewController: UIViewController {
         view.bringSubviewToFront(containerScrollView)
         overlayScrollView.delegate = self
         containerScrollView.addGestureRecognizer(overlayScrollView.panGestureRecognizer)
-        
+        containerScrollView.alwaysBounceVertical = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
         horizontalContainerView.contentSize = CGSize(width: view.frame.width * 3, height: horizontalContainerView.contentSize.height)
         addChildVC()
-        
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -165,7 +169,7 @@ class ProfileViewController: UIViewController {
         vc2.pageIndex = 2
         vc2.pageTitle = "Tag"
         vc2.pageImage = "ic-tag"
-        vc2.count = 3
+        vc2.count = 30
         vc2.color = .green
         
         return [vc, vc1, vc2]
@@ -174,11 +178,12 @@ class ProfileViewController: UIViewController {
     func updateOverlayScrollContentSize(with bottomView: UIView){
         self.overlayScrollView.contentSize = getContentSize(for: bottomView)
         self.containerScrollView.contentSize = self.overlayScrollView.contentSize
+//        barCollectionView.reloadData()
     }
     
     func getContentSize(for bottomView: UIView) -> CGSize{
         if let scroll = bottomView as? UIScrollView {
-            let bottomHeight = max(scroll.contentSize.height, view.frame.height - topView.frame.height - barCollectionView.frame.height - navBar.frame.height)
+            let bottomHeight = max(scroll.contentSize.height, containerScrollView.frame.height - topView.frame.height - barCollectionView.frame.height)
             return CGSize(width: view.frame.width, height: bottomHeight + topView.frame.height + barCollectionView.frame.height)
         } else {
             let bottomHeight = view.frame.height - topView.frame.height - barCollectionView.frame.height
@@ -192,6 +197,10 @@ class ProfileViewController: UIViewController {
     
     @objc func buttonMoreTapped(_ sender: UIButton) {
         print("more button tapped")
+    }
+    
+    @objc func buttonUserTapped(_ sender: UIButton) {
+        print("more user tapped")
     }
     
 }
@@ -227,7 +236,9 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileBarCollectionViewCell", for: indexPath) as! ProfileBarCollectionViewCell
             let image = childBottomVC[indexPath.row].pageImage
             cell.image.image = UIImage(named: image!)
-            cell.image.alpha = 0.5
+            if indexPath.row > 0 {
+                cell.image.alpha = 0.5
+            }
             return cell
         }
     }
@@ -236,19 +247,40 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
         if collectionView == storySavedCollectionView {
             print("ahihi")
         } else {
-            currentIndex = indexPath.row
-            if let offset = contentOffsets[indexPath.row]{
-                self.overlayScrollView.contentOffset.y = offset
-            }else{
-                self.overlayScrollView.contentOffset.y = self.containerScrollView.contentOffset.y
-            }
-            UIView.animate(withDuration: 0.3, animations: {
-                self.horizontalContainerView.contentOffset.x = CGFloat(indexPath.row) * self.view.frame.width
-            })
-            updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
-            childView[currentIndex] = childBottomVC[currentIndex].collectionView
-            if let cell = collectionView.cellForItem(at: indexPath) as? ProfileBarCollectionViewCell {
-                cell.image.alpha = 1
+            
+            if isHorizontalBottomScroll {
+                if let cell = collectionView.cellForItem(at: indexPath) as? ProfileBarCollectionViewCell {
+                    UIView.animate(withDuration: 0.3, animations: {
+                        cell.image.alpha = 1
+                    })
+                    
+                }
+                if let selectedIndexPath = previosSelectedIndexPath, selectedIndexPath != indexPath {
+                    // Manually call didDeselectItemAt for the previously selected cell
+                    collectionView.delegate?.collectionView?(collectionView, didDeselectItemAt: selectedIndexPath)
+                }
+                
+                // Update the selected index path
+                previosSelectedIndexPath = indexPath
+                isHorizontalBottomScroll = false
+            } else {
+                currentIndex = indexPath.row
+                if let offset = contentOffsets[indexPath.row]{
+                    self.overlayScrollView.contentOffset.y = offset
+                }else{
+                    self.overlayScrollView.contentOffset.y = self.containerScrollView.contentOffset.y
+                }
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.horizontalContainerView.contentOffset.x = CGFloat(indexPath.row) * self.view.frame.width
+                })
+                updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
+                childView[currentIndex] = childBottomVC[currentIndex].collectionView
+                if let cell = collectionView.cellForItem(at: indexPath) as? ProfileBarCollectionViewCell {
+                    UIView.animate(withDuration: 0.3, animations: {
+                        cell.image.alpha = 1
+                    })
+                }
+                
             }
         }
         
@@ -256,7 +288,9 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? ProfileBarCollectionViewCell {
-            cell.image.alpha = 0.5
+            UIView.animate(withDuration: 0.1, animations: {
+                cell.image.alpha = 0.5
+            })
         }
     }
     
@@ -266,6 +300,15 @@ extension ProfileViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         if scrollView == horizontalContainerView {
+            isHorizontalBottomScroll = true
+            let pageIndex = Int(round(scrollView.contentOffset.x / scrollView.bounds.width))
+  
+            if barCollectionView.numberOfItems(inSection: 0) > 0 {
+                let indexPath = IndexPath(item: pageIndex, section: 0)
+                barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
+//                previosSelectedIndexPath = indexPath
+            }
+            
             let offsetX = scrollView.contentOffset.x / scrollView.contentSize.width * view.frame.width
             UIView.animate(withDuration: 0.1, animations: {
                 self.bottomBarView.frame.origin.x = offsetX
@@ -303,10 +346,7 @@ extension ProfileViewController: UIScrollViewDelegate {
                 updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
                 childView[currentIndex] = childBottomVC[currentIndex].collectionView
             }
+            
         }
-    }
-    
-    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        
     }
 }
