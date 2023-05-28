@@ -9,6 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    @IBOutlet weak var commentTextFiled: UITextField!
     var topAnchor: NSLayoutConstraint!
     var customNav: CustomNavigationBar!
     @IBOutlet weak var testView: UIView!
@@ -18,12 +19,12 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         testView.translatesAutoresizingMaskIntoConstraints = false
-        topAnchor = testView.topAnchor.constraint(equalTo: view.topAnchor)
+        topAnchor = testView.topAnchor.constraint(equalTo: commentTextFiled.bottomAnchor, constant: 12)
         NSLayoutConstraint.activate([
             testView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8),
             testView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -8 ),
             testView.heightAnchor.constraint(equalToConstant: 500),
-            testView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -8)
+            topAnchor
         ])
         
         let imageView: UIImageView = UIImageView(image: UIImage(named: "avt"))
@@ -52,6 +53,22 @@ class HomeViewController: UIViewController {
         
         setupNav()
         
+    }
+    
+    @IBAction func backButtonTapped(_ sender: Any) {
+        navigationController?.popViewController(animated: true)
+        //        let vc = ProfileViewController()
+        //        navigationController?.pushViewController(vc, animated: true)
+    }
+    func setUpTextFiled() {
+        // Set the input mode to a keyboard that supports emoji
+        commentTextFiled.keyboardType = .asciiCapable
+        commentTextFiled.keyboardAppearance = .dark
+        
+        // Show the emoji keyboard by setting the text input mode
+        if let emojiInputMode = UITextInputMode.activeInputModes.first(where: { $0.primaryLanguage == "emoji" }) {
+            //            commentTextFiled.textInputMode = emojiInputMode
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -95,7 +112,7 @@ class HomeViewController: UIViewController {
             initialCenter = customNav.center
         case .changed:
             let translation = pan.translation(in: customNav.superview)
-//            print(translation)
+            //            print(translation)
             let newCenter = CGPoint(x: initialCenter.x + translation.x,
                                     y: initialCenter.y + translation.y)
             
@@ -106,7 +123,7 @@ class HomeViewController: UIViewController {
                 //                customNav.center = newCenter
             }
             customNav.center = newCenter
-//            pan.setTranslation(.zero, in: view)
+            //            pan.setTranslation(.zero, in: view)
             //
         case .ended,
                 .cancelled:
@@ -114,7 +131,7 @@ class HomeViewController: UIViewController {
                 print("ahihi")
                 UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: [.curveEaseInOut]) {
                     self.customNav.center = self.centerNav
-//                    print(self.view.center)
+                    //                    print(self.view.center)
                 }
             }
             
@@ -125,7 +142,7 @@ class HomeViewController: UIViewController {
             break
         }
         
-//        pan.setTranslation(.zero, in: customNav.superview)
+        //        pan.setTranslation(.zero, in: customNav.superview)
     }
     
     @objc func handlePan2(_ pan: UIPanGestureRecognizer) {
@@ -152,14 +169,14 @@ class HomeViewController: UIViewController {
             customNav.center = centerNav
         }
         // Reset the translation to zero so that it starts from the initial position in the next callback
-//        gesture.setTranslation(CGPoint.zero, in: customNav)
+        //        gesture.setTranslation(CGPoint.zero, in: customNav)
     }
     
     @objc func handlePan4(_ pan: UIPanGestureRecognizer) {
         var touchPositionInSuperView = pan.location(in: testView)
         var touchPositionInView = pan.location(in: customNav)
         touchPositionInSuperView.y = touchPositionInSuperView.y - touchPositionInView.y
-//        print("ahihi\(touchPosition)")
+        //        print("ahihi\(touchPosition)")
         print(testView.frame)
         let trans = pan.translation(in: customNav)
         if touchPositionInSuperView.y <= self.testView.frame.height - self.customNav.frame.height && touchPositionInSuperView.y >= 0{
@@ -178,7 +195,7 @@ class HomeViewController: UIViewController {
             
             //        customNav.center = centerNav
             pan.setTranslation(CGPoint.zero, in: view)
-
+            
         } else {
             pan.setTranslation(CGPoint.zero, in: view)
         }

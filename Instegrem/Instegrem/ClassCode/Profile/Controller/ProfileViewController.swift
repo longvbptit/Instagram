@@ -12,9 +12,12 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var avatarImage: UIImageView!
     @IBOutlet weak var containerScrollView: UIScrollView!
     @IBOutlet weak var topView: UIView!
-    @IBOutlet weak var navBar: UIView!
+    @IBOutlet weak var navBar: CustomNavigationBar!
     @IBOutlet weak var bottomView: UIView!
     
+    @IBOutlet weak var changeProfileButton: UIButton!
+    @IBOutlet weak var readMoreLabel: UILabel!
+    @IBOutlet weak var bioLabel: UILabel!
     @IBOutlet weak var barCollectionView: UICollectionView!
     @IBOutlet weak var horizontalContainerView: UIScrollView!
     
@@ -39,7 +42,7 @@ class ProfileViewController: UIViewController {
     var isHorizontalBottomScroll: Bool = false
     var previosSelectedIndexPath: IndexPath?
     
-    var window: UIWindow!
+    var tapBioGesture: UITapGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,13 +51,15 @@ class ProfileViewController: UIViewController {
         layoutOverlayScrollView()
         horizontalContainerView.delegate = self
         setupStoryCollection()
-//        tabBarController?.tabBar.isHidden = true
+        changeProfileButton.addTarget(self, action: #selector(changeProfileButtonTapped(_:)), for: .touchUpInside)
+        //        tabBarController?.tabBar.isHidden = true
+        configBioLabel()
     }
     
     func settingUI() {
         
         indicator = IGActivityIndicator(frame: avatarImage.frame, addWidthAndHeight: 4)
-//        topView.layer.addSublayer(indicator)
+        //        topView.layer.addSublayer(indicator)
         avatarImage.clipsToBounds = true
         avatarImage.layer.cornerRadius = 40
         indicator.addAnimation()
@@ -78,7 +83,6 @@ class ProfileViewController: UIViewController {
         storySavedCollectionView.dataSource = self
         storySavedCollectionView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 0)
         storySavedCollectionView.register(UINib(nibName: "StorySavedCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "StorySavedCollectionViewCell")
-        
     }
     
     func setupNavBar() {
@@ -102,12 +106,18 @@ class ProfileViewController: UIViewController {
         let naviBar = CustomNavigationBar(leftButtons: [firstLeftButton, secondLeftButton], rightButtons: [firstRightButton, secondRightButton], spacingRightButton: 24)
         naviBar.backgroundColor = UIColor.white
         navBar.addSubview(naviBar)
-        naviBar.frame = navBar.bounds
-        
+        naviBar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            naviBar.topAnchor.constraint(equalTo: navBar.topAnchor),
+            naviBar.bottomAnchor.constraint(equalTo: navBar.bottomAnchor),
+            naviBar.leftAnchor.constraint(equalTo: navBar.leftAnchor),
+            naviBar.rightAnchor.constraint(equalTo: navBar.rightAnchor)
+        ])
     }
     
     func layoutOverlayScrollView() {
         overlayScrollView = UIScrollView()
+        overlayScrollView.showsVerticalScrollIndicator = false
         view.addSubview(overlayScrollView)
         overlayScrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -128,24 +138,52 @@ class ProfileViewController: UIViewController {
         addChildVC()
     }
     
+    override func viewWillLayoutSubviews() {
+        for (index, childVC) in childBottomVC.enumerated() {
+            childVC.view.frame = CGRect(x: CGFloat(index) * view.bounds.width, y: 0, width: view.bounds.width, height:  horizontalContainerView.bounds.height)
+            childVC.view.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+            horizontalContainerView.addSubview(childVC.view)
+            childVC.didMove(toParent: self)
+        }
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
         if let scrollView = childBottomVC[currentIndex].collectionView {
             scrollView.panGestureRecognizer.require(toFail: overlayScrollView.panGestureRecognizer)
         }
         updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
+        
+        isHorizontalBottomScroll = true
+        
+        if barCollectionView.numberOfItems(inSection: 0) > 0 {
+            let indexPath = IndexPath(item: 0, section: 0)
+            barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
+            //                previosSelectedIndexPath = indexPath
+        }
+    }
+    
+    func configBioLabel() {
+        if bioLabel.frame.height > 18*4 {
+            bioLabel.numberOfLines = 4
+            readMoreLabel.isHidden = false
+            tapBioGesture = UITapGestureRecognizer(target: self, action: #selector(handleBioTapGesture(_:)))
+            let tapReadmore = UITapGestureRecognizer(target: self, action: #selector(handleBioTapGesture(_:)))
+            bioLabel.isUserInteractionEnabled = true
+            readMoreLabel.isUserInteractionEnabled = true
+            bioLabel.addGestureRecognizer(tapBioGesture)
+            readMoreLabel.addGestureRecognizer(tapReadmore)
+//            view.layoutIfNeeded()
+        }
+        print(bioLabel.frame)
     }
     
     func addChildVC() {
         childBottomVC = setupChildViewController()
         bottomBarViewWidthConstraint.constant = (view.frame.width - 3) / CGFloat(childBottomVC.count)
-        for (index, childVC) in childBottomVC.enumerated() {
-            childVC.view.frame = CGRect(x: CGFloat(index) * view.bounds.width, y: 0, width: view.bounds.width, height:  horizontalContainerView.bounds.height)
-            print("ChildOrigin: \(childVC.view.frame)")
+        for childVC in childBottomVC {
             addChild(childVC)
-            childVC.view.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-            horizontalContainerView.addSubview(childVC.view)
-            childVC.didMove(toParent: self)
         }
     }
     
@@ -178,7 +216,6 @@ class ProfileViewController: UIViewController {
     func updateOverlayScrollContentSize(with bottomView: UIView){
         self.overlayScrollView.contentSize = getContentSize(for: bottomView)
         self.containerScrollView.contentSize = self.overlayScrollView.contentSize
-//        barCollectionView.reloadData()
     }
     
     func getContentSize(for bottomView: UIView) -> CGSize{
@@ -192,15 +229,50 @@ class ProfileViewController: UIViewController {
     }
     
     @objc func buttonCreateTapped(_ sender: UIButton) {
-        print("create button tapped")
+        let vc = ProfileCreateViewController()
+        vc.modalPresentationStyle = .overFullScreen
+        self.present(vc, animated: false)
     }
     
     @objc func buttonMoreTapped(_ sender: UIButton) {
-        print("more button tapped")
+        let vc = ProfileMoreViewController()
+        vc.modalPresentationStyle = .overFullScreen
+        self.present(vc, animated: false)
     }
     
     @objc func buttonUserTapped(_ sender: UIButton) {
-        print("more user tapped")
+        let transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        let vc = ProfileAddAccountViewController()
+        vc.modalPresentationStyle = .overFullScreen
+        vc.completionHandler = {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.tabBarController?.view.cornerRadius = 0
+                self.tabBarController?.view.transform = CGAffineTransform.identity
+            })
+        }
+
+        self.present(vc, animated: false) {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.tabBarController?.view.transform = transform
+                self.tabBarController?.view.cornerRadius = 48
+                self.tabBarController?.view.clipsToBounds = true
+                self.view.layoutIfNeeded()
+            })
+        }
+    }
+    
+    @objc func handleBioTapGesture(_ gesture: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.1, animations: {
+            self.bioLabel.numberOfLines = 0
+            self.readMoreLabel.alpha = 0
+//            self.view.layoutIfNeeded()
+        })
+    }
+    
+    @objc func changeProfileButtonTapped(_ sender: UIButton) {
+        let vc = ProfileChangeViewController()
+        vc.modalPresentationStyle = .overFullScreen
+        self.present(vc, animated: true)
     }
     
 }
@@ -235,7 +307,7 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileBarCollectionViewCell", for: indexPath) as! ProfileBarCollectionViewCell
             let image = childBottomVC[indexPath.row].pageImage
-            cell.image.image = UIImage(named: image!)
+            cell.image.image = UIImage(named: image ?? "ic-avt")
             if indexPath.row > 0 {
                 cell.image.alpha = 0.5
             }
@@ -302,11 +374,11 @@ extension ProfileViewController: UIScrollViewDelegate {
         if scrollView == horizontalContainerView {
             isHorizontalBottomScroll = true
             let pageIndex = Int(round(scrollView.contentOffset.x / scrollView.bounds.width))
-  
+            
             if barCollectionView.numberOfItems(inSection: 0) > 0 {
                 let indexPath = IndexPath(item: pageIndex, section: 0)
                 barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
-//                previosSelectedIndexPath = indexPath
+                //                previosSelectedIndexPath = indexPath
             }
             
             let offsetX = scrollView.contentOffset.x / scrollView.contentSize.width * view.frame.width
@@ -318,7 +390,7 @@ extension ProfileViewController: UIScrollViewDelegate {
         if scrollView == overlayScrollView {
             contentOffsets[currentIndex] = scrollView.contentOffset.y
             let topHeight = bottomView.frame.minY
-            if scrollView.contentOffset.y < topHeight {
+            if round(scrollView.contentOffset.y) < round(topHeight) {
                 self.containerScrollView.contentOffset.y = scrollView.contentOffset.y
                 for childVC in childBottomVC {
                     childVC.collectionView.contentOffset.y = 0
@@ -335,9 +407,7 @@ extension ProfileViewController: UIScrollViewDelegate {
         if scrollView == horizontalContainerView {
             let newIndex = scrollView.contentOffset.x / scrollView.contentSize.width * 3
             if Int(newIndex) != currentIndex {
-                print("Content Offset: \(contentOffsets)")
                 currentIndex = Int(newIndex)
-                
                 if let offset = contentOffsets[currentIndex] {
                     self.overlayScrollView.contentOffset.y = offset
                 } else {

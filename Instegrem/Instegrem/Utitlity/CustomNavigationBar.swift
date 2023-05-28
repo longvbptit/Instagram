@@ -24,7 +24,7 @@ class CustomNavigationBar: UIView {
         self.spacingRightButton = CGFloat(spacingRightButton)
         self.centerButton = centerButton
         super.init(frame: .zero)
-        
+        self.backgroundColor = .white
         setupUI()
     }
     
