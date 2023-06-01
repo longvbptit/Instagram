@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -10,8 +11,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HomeViewController" customModule="Instegrem" customModuleProvider="target">
             <connections>
-                <outlet property="commentTextFiled" destination="IoJ-o1-W3m" id="LOs-gJ-pmh"/>
-                <outlet property="testView" destination="ysh-Eq-Eiv" id="Z2w-NR-LqU"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -19,57 +18,14 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aIb-M2-Ftm">
-                    <rect key="frame" x="0.0" y="40" width="414" height="822"/>
-                    <subviews>
-                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ysh-Eq-Eiv">
-                            <rect key="frame" x="87" y="157" width="240" height="500"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" systemColor="systemGreenColor"/>
-                        </view>
-                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="p" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IoJ-o1-W3m">
-                            <rect key="frame" x="96" y="0.0" width="222" height="34"/>
-                            <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </textField>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I3Z-ZQ-tc1">
-                            <rect key="frame" x="8" y="-0.5" width="62" height="35"/>
-                            <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="plain" title="Back"/>
-                            <connections>
-                                <action selector="backButtonTapped:" destination="-1" eventType="touchUpInside" id="lee-u5-NHf"/>
-                            </connections>
-                        </button>
-                    </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    <constraints>
-                        <constraint firstItem="I3Z-ZQ-tc1" firstAttribute="centerY" secondItem="IoJ-o1-W3m" secondAttribute="centerY" id="Gd0-H9-nuF"/>
-                        <constraint firstItem="IoJ-o1-W3m" firstAttribute="leading" secondItem="aIb-M2-Ftm" secondAttribute="leading" constant="96" id="Prt-t0-kNJ"/>
-                        <constraint firstAttribute="trailing" secondItem="IoJ-o1-W3m" secondAttribute="trailing" constant="96" id="U24-5J-g2n"/>
-                        <constraint firstItem="IoJ-o1-W3m" firstAttribute="top" secondItem="aIb-M2-Ftm" secondAttribute="top" id="ow6-vx-Abi"/>
-                        <constraint firstItem="I3Z-ZQ-tc1" firstAttribute="leading" secondItem="aIb-M2-Ftm" secondAttribute="leading" constant="8" id="wSJ-ad-2T0"/>
-                    </constraints>
-                </view>
-            </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-            <constraints>
-                <constraint firstItem="aIb-M2-Ftm" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="0Qp-tn-TtG"/>
-                <constraint firstItem="aIb-M2-Ftm" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="-8" id="D2q-IO-1M5"/>
-                <constraint firstItem="aIb-M2-Ftm" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="dSe-pr-cud"/>
-                <constraint firstItem="aIb-M2-Ftm" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="ipu-Mx-wkI"/>
-            </constraints>
             <point key="canvasLocation" x="11.594202898550726" y="-11.383928571428571"/>
         </view>
     </objects>
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemGreenColor">
-            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

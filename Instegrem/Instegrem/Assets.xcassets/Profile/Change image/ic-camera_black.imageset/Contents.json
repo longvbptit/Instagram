@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic-camera_black.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

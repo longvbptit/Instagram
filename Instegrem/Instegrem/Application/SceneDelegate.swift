@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import FirebaseAuth
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -16,11 +16,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             guard let windowScene = (scene as? UIWindowScene) else { return }
             window = UIWindow(frame: UIScreen.main.bounds)
-            let home = TabBarController()
-            self.window?.rootViewController = home
+            if Auth.auth().currentUser != nil {
+                let tabbar = TabBarController()
+                self.window?.rootViewController = tabbar
+            } else {
+                let login = UINavigationController(rootViewController: LoginViewController())
+                self.window?.rootViewController = login
+            }
+            
             window?.makeKeyAndVisible()
             window?.windowScene = windowScene
         }
+    
+    func changeRootViewController(_ vc: UIViewController, animated: Bool = true) {
+        guard let window = self.window else {
+            return
+        }
+        // change the root view controller to your specific view controller
+        window.rootViewController = vc
+        window.alpha = 0.3
+        UIView.transition(with: window, duration: 0.5, animations: {
+            window.alpha = 1
+        })
+    }
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

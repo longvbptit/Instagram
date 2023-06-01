@@ -49,7 +49,6 @@ class ProfileBottomCollectionViewCell: UICollectionViewCell {
 //
 //                // Use the pinchCenter as needed
 //            } else {
-//
 //                let touch1 = gesture.location(ofTouch: 0, in: view)
 //                pinCenter = CGPoint(x: touch1.x - view.bounds.midX, y: touch1.y - view.bounds.midY)
 //            }
@@ -68,11 +67,6 @@ class ProfileBottomCollectionViewCell: UICollectionViewCell {
             UIView.animate(withDuration: 0.1, animations: {
                 view.transform = transform
             })
-            
-            
-            //            UIView.animate(withDuration: 0.1, animations: {
-            //                view.transform = CGAffineTransform(scaleX: newScale, y: newScale)
-            //            })
             
         }
         

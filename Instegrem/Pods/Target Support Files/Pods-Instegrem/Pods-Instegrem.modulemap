@@ -1,0 +1,6 @@
+framework module Pods_Instegrem {
+  umbrella header "Pods-Instegrem-umbrella.h"
+
+  export *
+  module * { export * }
+}

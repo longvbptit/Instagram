@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import FirebaseFirestore
+import FirebaseAuth
+import SDWebImage
 
 class ProfileViewController: UIViewController {
     //  MARK: - OUTLET
@@ -26,6 +29,7 @@ class ProfileViewController: UIViewController {
     
     @IBOutlet weak var storySavedCollectionView: UICollectionView!
     
+    @IBOutlet weak var fullNameLabel: UILabel!
     var overlayScrollView: UIScrollView!
     var currentIndex: Int = 0
     var indicator: IGActivityIndicator!
@@ -44,22 +48,43 @@ class ProfileViewController: UIViewController {
     
     var tapBioGesture: UITapGestureRecognizer!
     
+    var firstLeftButton: UIButton!
+    
+    var db: Firestore!
+    var user: User!
+    deinit {
+        print("DEBUG: DEINIT - Profile deinit")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        db = Firestore.firestore()
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let data = db.collection("users").document(uid)
+        data.getDocument(completion: { [self] documentSnap, error in
+            if error != nil {
+                return
+            }
+            guard let data = documentSnap?.data() else {return}
+            self.user = User(uid: uid , dictionary: data)
+            self.avatarImage.sd_setImage(with: URL(string: user.avatar), placeholderImage: UIImage(named: "ic-avatar_default"))
+            self.updateUI()
+        })
+        
         settingUI()
         setUpBarColletion()
         layoutOverlayScrollView()
         horizontalContainerView.delegate = self
         setupStoryCollection()
         changeProfileButton.addTarget(self, action: #selector(changeProfileButtonTapped(_:)), for: .touchUpInside)
-        //        tabBarController?.tabBar.isHidden = true
-        configBioLabel()
+        
     }
     
     func settingUI() {
         
         indicator = IGActivityIndicator(frame: avatarImage.frame, addWidthAndHeight: 4)
-        //        topView.layer.addSublayer(indicator)
+//        topView.layer.addSublayer(indicator)
         avatarImage.clipsToBounds = true
         avatarImage.layer.cornerRadius = 40
         indicator.addAnimation()
@@ -70,6 +95,15 @@ class ProfileViewController: UIViewController {
         horizontalContainerView.alwaysBounceVertical = false
         horizontalContainerView.alwaysBounceHorizontal = true
         
+    }
+    
+    func updateUI() {
+        
+        firstLeftButton.setTitle(user.userName, for: .normal)
+        fullNameLabel.text = user.name
+        bioLabel.text = user.bio
+        bioLabel.numberOfLines = 0
+        configBioLabel()
     }
     
     func setUpBarColletion() {
@@ -86,8 +120,8 @@ class ProfileViewController: UIViewController {
     }
     
     func setupNavBar() {
-        let firstLeftButton = UIButton(type: .system)
-        firstLeftButton.setTitle("bao_longgg", for: .normal)
+        firstLeftButton = UIButton(type: .system)
+        firstLeftButton.setTitle("user_name", for: .normal)
         firstLeftButton.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         firstLeftButton.setTitleColor(UIColor.black, for: .normal)
         firstLeftButton.addTarget(self, action: #selector(buttonUserTapped(_:)), for: .touchUpInside)
@@ -165,18 +199,16 @@ class ProfileViewController: UIViewController {
     }
     
     func configBioLabel() {
-        if bioLabel.frame.height > 18*4 {
-            bioLabel.numberOfLines = 4
-            readMoreLabel.isHidden = false
+        if bioLabel.requiredHeight > 18*3 {
+            bioLabel.numberOfLines = 3
+            readMoreLabel.alpha = 1
             tapBioGesture = UITapGestureRecognizer(target: self, action: #selector(handleBioTapGesture(_:)))
             let tapReadmore = UITapGestureRecognizer(target: self, action: #selector(handleBioTapGesture(_:)))
             bioLabel.isUserInteractionEnabled = true
             readMoreLabel.isUserInteractionEnabled = true
             bioLabel.addGestureRecognizer(tapBioGesture)
             readMoreLabel.addGestureRecognizer(tapReadmore)
-//            view.layoutIfNeeded()
         }
-        print(bioLabel.frame)
     }
     
     func addChildVC() {
@@ -244,6 +276,7 @@ class ProfileViewController: UIViewController {
         let transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         let vc = ProfileAddAccountViewController()
         vc.modalPresentationStyle = .overFullScreen
+        vc.avatar = avatarImage.image
         vc.completionHandler = {
             UIView.animate(withDuration: 0.3, animations: {
                 self.tabBarController?.view.cornerRadius = 0
@@ -265,14 +298,17 @@ class ProfileViewController: UIViewController {
         UIView.animate(withDuration: 0.1, animations: {
             self.bioLabel.numberOfLines = 0
             self.readMoreLabel.alpha = 0
-//            self.view.layoutIfNeeded()
         })
     }
     
     @objc func changeProfileButtonTapped(_ sender: UIButton) {
         let vc = ProfileChangeViewController()
-        vc.modalPresentationStyle = .overFullScreen
-        self.present(vc, animated: true)
+        vc.user = user
+        vc.avt = avatarImage.image
+        vc.delegate = self
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .overFullScreen
+        present(nav, animated: true)
     }
     
 }
@@ -378,7 +414,6 @@ extension ProfileViewController: UIScrollViewDelegate {
             if barCollectionView.numberOfItems(inSection: 0) > 0 {
                 let indexPath = IndexPath(item: pageIndex, section: 0)
                 barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
-                //                previosSelectedIndexPath = indexPath
             }
             
             let offsetX = scrollView.contentOffset.x / scrollView.contentSize.width * view.frame.width
@@ -418,5 +453,15 @@ extension ProfileViewController: UIScrollViewDelegate {
             }
             
         }
+    }
+}
+
+extension ProfileViewController: UpdateUserInfoDelegate {
+    func updateUserInfo(user: User, avatar: UIImage?) {
+        if let avatar = avatar {
+            self.avatarImage.image = avatar
+        }
+        self.user = user
+        updateUI()
     }
 }
