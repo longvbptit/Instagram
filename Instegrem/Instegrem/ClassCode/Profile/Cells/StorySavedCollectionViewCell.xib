@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -11,29 +12,26 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="StorySavedCollectionViewCell" customModule="Instegrem" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="195" height="151"/>
+            <rect key="frame" x="0.0" y="0.0" width="136" height="155"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="195" height="151"/>
+                <rect key="frame" x="0.0" y="0.0" width="136" height="155"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6X1-0Y-3n9">
-                        <rect key="frame" x="0.0" y="0.0" width="195" height="151"/>
+                        <rect key="frame" x="0.0" y="0.0" width="136" height="155"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avt" translatesAutoresizingMaskIntoConstraints="NO" id="w0M-C2-JMB">
-                                <rect key="frame" x="69.666666666666671" y="8" width="56" height="56"/>
+                                <rect key="frame" x="8.6666666666666714" y="8" width="119" height="119"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="56" id="hqL-0g-b8W"/>
                                     <constraint firstAttribute="width" secondItem="w0M-C2-JMB" secondAttribute="height" multiplier="1:1" id="jMg-S8-nfz"/>
                                 </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                        <real key="value" value="28"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tin nổi bật" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zB2-7C-FkP">
-                                <rect key="frame" x="67.666666666666671" y="72" width="59.666666666666671" height="14.333333333333329"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tin nổi bật" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zB2-7C-FkP">
+                                <rect key="frame" x="4" y="135" width="128" height="16"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="16" id="alt-BR-Y2R"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -44,6 +42,8 @@
                             <constraint firstItem="zB2-7C-FkP" firstAttribute="top" secondItem="w0M-C2-JMB" secondAttribute="bottom" constant="8" id="Fjf-RK-KD6"/>
                             <constraint firstItem="w0M-C2-JMB" firstAttribute="top" secondItem="6X1-0Y-3n9" secondAttribute="top" constant="8" id="LVZ-d2-XUU"/>
                             <constraint firstItem="zB2-7C-FkP" firstAttribute="centerX" secondItem="6X1-0Y-3n9" secondAttribute="centerX" id="hCg-L2-cN6"/>
+                            <constraint firstAttribute="bottom" secondItem="zB2-7C-FkP" secondAttribute="bottom" constant="4" id="laW-nd-XOG"/>
+                            <constraint firstAttribute="trailing" secondItem="zB2-7C-FkP" secondAttribute="trailing" constant="4" id="pQJ-kc-LJU"/>
                             <constraint firstItem="w0M-C2-JMB" firstAttribute="centerX" secondItem="6X1-0Y-3n9" secondAttribute="centerX" id="rfY-1T-f0P"/>
                         </constraints>
                     </view>
@@ -56,12 +56,12 @@
                 <constraint firstItem="6X1-0Y-3n9" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="lEQ-61-kpn"/>
                 <constraint firstAttribute="bottom" secondItem="6X1-0Y-3n9" secondAttribute="bottom" id="p99-SU-0nq"/>
             </constraints>
-            <size key="customSize" width="195" height="151"/>
+            <size key="customSize" width="136" height="155"/>
             <connections>
                 <outlet property="storyImage" destination="w0M-C2-JMB" id="BHP-bv-3le"/>
                 <outlet property="storyLabel" destination="zB2-7C-FkP" id="SS9-Bc-h0F"/>
             </connections>
-            <point key="canvasLocation" x="194.6564885496183" y="24.295774647887324"/>
+            <point key="canvasLocation" x="54.961832061068698" y="0.35211267605633806"/>
         </collectionViewCell>
     </objects>
     <resources>

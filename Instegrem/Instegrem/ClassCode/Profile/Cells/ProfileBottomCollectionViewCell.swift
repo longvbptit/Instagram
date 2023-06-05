@@ -122,6 +122,7 @@ public class ISImageView: UIImageView {
         didSet {
             guard oldValue != isInteractable else { return }
             if isInteractable {
+                backgroundColor = .systemGray3
                 setupGesture()
                 cellForTarget(superview: superview)?.clipsToBounds = false
                 isUserInteractionEnabled = true

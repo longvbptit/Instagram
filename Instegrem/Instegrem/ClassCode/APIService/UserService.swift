@@ -68,5 +68,19 @@ class UserService {
             completion(error)
         }
     }
+    
+    static public func getUser(uid: String, completion: @escaping ([String: Any],Error?) -> Void) {
+        db.collection("users").document(uid).getDocument(completion: { documentSnap, error in
+            if let error = error {
+                completion([:],error)
+                return
+            }
+            guard let data = documentSnap?.data() else {
+                completion([:],error)
+                return
+            }
+            completion(data, nil)
+        })
+    }
 }
 

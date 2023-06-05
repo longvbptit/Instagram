@@ -14,7 +14,7 @@ class ProfileChangeAvatarViewController: CustomPresentViewController {
     var tableView: UITableView!
     var completion: ((UIImagePickerController.SourceType?) -> Void)?
     override func viewDidLoad() {
-        defaultHeight = CGFloat(14 + 12 + 48 + 24 + 56 * ChangeAvatarIcon.allCases.count + 50)
+        defaultHeight = CGFloat(14 + 12 + 48 + 24 + 48 * ChangeAvatarIcon.allCases.count + 50)
         minHeight = defaultHeight
         super.viewDidLoad()
         configUI()
@@ -118,7 +118,7 @@ extension ProfileChangeAvatarViewController: UITableViewDelegate, UITableViewDat
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        56
+        48
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -137,7 +137,7 @@ extension ProfileChangeAvatarViewController: UITableViewDelegate, UITableViewDat
         if indexPath.row == ChangeAvatarIcon.allCases.count - 1 {
             customDismissForRemoveAvatar()
         } else {
-            customDismissForChangeAvatar(for: ChangeAvatarIcon.allCases[indexPath.row].sourceType)
+            customDismissForChangeAvatar(for: ChangeAvatarIcon.allCases[indexPath.row].sourceType ?? .camera)
         }
         
     }
@@ -161,7 +161,7 @@ enum ChangeAvatarIcon: String, CaseIterable {
             return "ic-trash"
         }
     }
-    var sourceType: UIImagePickerController.SourceType {
+    var sourceType: UIImagePickerController.SourceType? {
         switch self {
         case .takePhoto:
             return .camera
@@ -170,7 +170,7 @@ enum ChangeAvatarIcon: String, CaseIterable {
         case .library:
             return .photoLibrary
         default:
-            return .camera
+            return nil
         }
     }
 }

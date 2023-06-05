@@ -16,14 +16,18 @@ class TabBarController: UITabBarController {
         UITabBar.appearance().barTintColor = .systemBackground
         tabBar.tintColor = .label
         setupVCs()
-        self.selectedIndex = 4
+//        self.selectedIndex = 4
+    }
+    
+    deinit {
+        print("DEBUG: DEINIT TabBarController")
     }
     
     func setupVCs() {
         viewControllers = [
             createNavController(for: HomeViewController(), title: NSLocalizedString("Home", comment: ""), image: UIImage(named: "ic-home")!),
             createNavController(for: HomeViewController(), title: NSLocalizedString("Search", comment: ""), image: UIImage(named: "ic-search")!),
-            createNavController(for: HomeViewController(), title: NSLocalizedString("Post", comment: ""), image: UIImage(named: "ic-create")!),
+            createNavController(for: PostViewController(), title: NSLocalizedString("Post", comment: ""), image: UIImage(named: "ic-create")!),
             createNavController(for: HomeViewController(), title: NSLocalizedString("Reel", comment: ""), image: UIImage(named: "ic-reel")!),
             createNavController(for: ProfileViewController(), title: NSLocalizedString("Profile", comment: ""), image: UIImage(named: "ic-profile")!)
         ]

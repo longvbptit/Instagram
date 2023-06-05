@@ -44,7 +44,7 @@
                     <rect key="frame" x="0.0" y="92" width="414" height="770"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8uz-YF-piD">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="334"/>
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="340"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="inh-1g-qJN">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="90"/>
@@ -203,10 +203,10 @@
                                     </constraints>
                                 </stackView>
                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="UMW-Rt-rpN">
-                                    <rect key="frame" x="0.0" y="236" width="414" height="86"/>
+                                    <rect key="frame" x="0.0" y="236" width="414" height="92"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <constraints>
-                                        <constraint firstAttribute="height" constant="86" id="Kwu-yv-fF8"/>
+                                        <constraint firstAttribute="height" constant="92" id="Kwu-yv-fF8"/>
                                     </constraints>
                                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="iIZ-ao-Ynb">
                                         <size key="itemSize" width="128" height="128"/>
@@ -239,7 +239,7 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5bW-fG-ANI">
-                            <rect key="frame" x="0.0" y="334" width="414" height="770"/>
+                            <rect key="frame" x="0.0" y="340" width="414" height="770"/>
                             <subviews>
                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="krc-Ck-gih">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>

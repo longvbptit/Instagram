@@ -37,12 +37,12 @@ class ProfileChangeViewController: UIViewController {
         leftButton.setTitle("Hủy", for: .normal)
         leftButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         leftButton.setTitleColor(.black, for: .normal)
-        leftButton.addTarget(self, action: #selector(backButtonTappeed(_:)), for: .touchUpInside)
+        leftButton.addTarget(self, action: #selector(backButtonTapped(_:)), for: .touchUpInside)
         
         rightButton = UIButton(type: .system)
         rightButton.setTitle("Xong", for: .normal)
         rightButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        rightButton.addTarget(self, action: #selector(doneButtonTappeed(_:)), for: .touchUpInside)
+        rightButton.addTarget(self, action: #selector(doneButtonTapped(_:)), for: .touchUpInside)
         
         let centerButton = UIButton()
         centerButton.setTitle("Chỉnh sửa trang cá nhân", for: .normal)
@@ -91,11 +91,11 @@ class ProfileChangeViewController: UIViewController {
         ])
     }
     
-    @objc func backButtonTappeed(_ sender: UIButton) {
+    @objc func backButtonTapped(_ sender: UIButton) {
         dismiss(animated: true)
     }
     
-    @objc func doneButtonTappeed(_ sender: UIButton) {
+    @objc func doneButtonTapped(_ sender: UIButton) {
         rightButton.setTitle("", for: .normal)
         let config = UIButton.Configuration.plain()
         rightButton.configuration = config
@@ -208,7 +208,9 @@ extension ProfileChangeViewController: ChangeAvatarDelegate {
             strongSelf.pickerController.sourceType = type
             strongSelf.pickerController.delegate = strongSelf
             strongSelf.pickerController.allowsEditing = true
+            strongSelf.pickerController.setEditing(true, animated: true)
             strongSelf.pickerController.mediaTypes = ["public.image"]
+//            strongSelf.pickerController.modalPresentationStyle = .overFullScreen
             strongSelf.present(strongSelf.pickerController, animated: true)
         }
         present(vc, animated: false)

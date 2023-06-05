@@ -15,14 +15,15 @@ class CustomNavigationBar: UIView {
     var centerButton: UIButton!
     var spacingLeftButton: CGFloat!
     var spacingRightButton: CGFloat!
-    
-    init(leftButtons: [UIButton] = [], spacingLeftButton: Float = 0, rightButtons: [UIButton] = [], spacingRightButton: Float = 0, centerButton: UIButton = UIButton()) {
+    var isFirstLeftButtonSettedSize: Bool!
+    init(leftButtons: [UIButton] = [], spacingLeftButton: Float = 0, isFirstLeftButtonSettedSize: Bool = false, rightButtons: [UIButton] = [], spacingRightButton: Float = 0, centerButton: UIButton = UIButton()) {
         
         self.leftButtons = leftButtons
         self.spacingLeftButton = CGFloat(spacingLeftButton)
         self.rightButtons = rightButtons
         self.spacingRightButton = CGFloat(spacingRightButton)
         self.centerButton = centerButton
+        self.isFirstLeftButtonSettedSize = isFirstLeftButtonSettedSize
         super.init(frame: .zero)
         self.backgroundColor = .white
         setupUI()
@@ -43,13 +44,20 @@ class CustomNavigationBar: UIView {
                     leftButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 4),
                     leftButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -4)
                 ])
+                
+                if isFirstLeftButtonSettedSize {
+                    NSLayoutConstraint.activate([
+                        leftButton.widthAnchor.constraint(equalToConstant: 36),
+                        leftButton.heightAnchor.constraint(equalToConstant: 36)
+                    ])
+                }
             } else {
                 self.addSubview(leftButton)
                 leftButton.translatesAutoresizingMaskIntoConstraints = false
                 NSLayoutConstraint.activate([
                     leftButton.leftAnchor.constraint(equalTo: leftButtons[index - 1].rightAnchor, constant: spacingLeftButton),
                     leftButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 4),
-                    leftButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -12)
+                    leftButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -4)
                 ])
             }
         }
@@ -70,6 +78,7 @@ class CustomNavigationBar: UIView {
                     rightButton.rightAnchor.constraint(equalTo: rightButtons[index - 1].leftAnchor, constant: spacingRightButton * -1),
                     rightButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 4),
                     rightButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -4)
+                    
                 ])
             }
         }

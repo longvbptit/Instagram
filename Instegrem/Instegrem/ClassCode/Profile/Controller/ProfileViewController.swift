@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
 import FirebaseAuth
 import SDWebImage
 
@@ -50,7 +49,6 @@ class ProfileViewController: UIViewController {
     
     var firstLeftButton: UIButton!
     
-    var db: Firestore!
     var user: User!
     deinit {
         print("DEBUG: DEINIT - Profile deinit")
@@ -58,18 +56,16 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        db = Firestore.firestore()
+
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        let data = db.collection("users").document(uid)
-        data.getDocument(completion: { [self] documentSnap, error in
-            if error != nil {
+        UserService.getUser(uid: uid, completion: { [weak self] data, error in
+            if let error = error {
+                print("Cant get user. Error: \(error)")
                 return
             }
-            guard let data = documentSnap?.data() else {return}
-            self.user = User(uid: uid , dictionary: data)
-            self.avatarImage.sd_setImage(with: URL(string: user.avatar), placeholderImage: UIImage(named: "ic-avatar_default"))
-            self.updateUI()
+            self?.user = User(uid: uid , dictionary: data)
+            self?.avatarImage.sd_setImage(with: URL(string: self?.user.avatar ?? ""), placeholderImage: UIImage(named: "ic-avatar_default"))
+            self?.updateUI()
         })
         
         settingUI()
@@ -133,9 +129,13 @@ class ProfileViewController: UIViewController {
         firstRightButton.setImage(UIImage(named: "ic-more")?.withRenderingMode(.alwaysOriginal), for: .normal)
         firstRightButton.addTarget(self, action: #selector(buttonMoreTapped(_:)), for: .touchUpInside)
         
+        var configuration = UIButton.Configuration.plain()
+        configuration.imagePadding = 4
         let secondRightButton = UIButton(type: .system)
         secondRightButton.setImage(UIImage(named: "ic-create")?.withRenderingMode(.alwaysOriginal), for: .normal)
         secondRightButton.addTarget(self, action: #selector(buttonCreateTapped(_:)), for: .touchUpInside)
+        secondLeftButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 12, right: 0)
+        
         
         let naviBar = CustomNavigationBar(leftButtons: [firstLeftButton, secondLeftButton], rightButtons: [firstRightButton, secondRightButton], spacingRightButton: 24)
         naviBar.backgroundColor = UIColor.white
@@ -239,7 +239,7 @@ class ProfileViewController: UIViewController {
         vc2.pageIndex = 2
         vc2.pageTitle = "Tag"
         vc2.pageImage = "ic-tag"
-        vc2.count = 30
+        vc2.count = 2
         vc2.color = .green
         
         return [vc, vc1, vc2]
@@ -336,8 +336,9 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == storySavedCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StorySavedCollectionViewCell", for: indexPath) as! StorySavedCollectionViewCell
+            cell.storyImage.cornerRadius = 28
             if indexPath.row > 0 {
-                cell.storyLabel.text = "Tin thứ \(indexPath.row)"
+                cell.storyLabel.text = "Ting thứ \(indexPath.row)"
             }
             return cell
         } else {

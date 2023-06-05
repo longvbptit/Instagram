@@ -24,7 +24,7 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="F0K-IV-21N">
                                 <rect key="frame" x="16" y="31" width="24" height="24"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="24" id="Fzm-NU-zQT"/>
+                                    <constraint firstAttribute="width" secondItem="F0K-IV-21N" secondAttribute="height" multiplier="1:1" id="7wI-hW-SuW"/>
                                     <constraint firstAttribute="width" constant="24" id="vwO-gh-V9p"/>
                                 </constraints>
                             </imageView>
