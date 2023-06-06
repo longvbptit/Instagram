@@ -9,7 +9,7 @@ import UIKit
 
 class ProfileBottomCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var image: ISImageView!
+    @IBOutlet weak var image: UIImageView!
     
     var isZooming: Bool = false
     var isPanning: Bool = false

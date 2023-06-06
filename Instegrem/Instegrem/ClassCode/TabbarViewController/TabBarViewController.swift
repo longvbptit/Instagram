@@ -42,17 +42,21 @@ class TabBarController: UITabBarController {
             createNavController(for: HomeViewController(), title: NSLocalizedString("Reel", comment: ""), image: UIImage(named: "ic-reel")!),
             createNavController(for: ProfileViewController(), title: NSLocalizedString("Profile", comment: ""), image: UIImage(named: "ic-profile")!)
         ]
+        self.tabBar.backgroundColor = .white
     }
     
     func createNavController(for rootViewController: UIViewController,
                              title: String,
                              image: UIImage) -> UIViewController {
         let navController = UINavigationController(rootViewController: rootViewController)
-//        navController.tabBarItem.title = title
+        navController.interactivePopGestureRecognizer?.delegate = self
         navController.tabBarItem.image = image
-//        navController.tabBarItem.selectedImage
-        navController.navigationBar.prefersLargeTitles = true
-//        rootViewController.navigationItem.title = title
         return navController
+    }
+}
+
+extension TabBarController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        true
     }
 }

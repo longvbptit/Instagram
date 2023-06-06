@@ -119,7 +119,7 @@ class PostCollectionViewCell: UICollectionViewCell {
     lazy var timeLabel: UILabel = {
         let timeLabel = UILabel()
         formatter = DateFormatter()
-        formatter.dateStyle = .short
+        formatter.dateFormat = "dd-MM-yyyy 'lúc' HH:mm"
         
         timeLabel.font = UIFont.systemFont(ofSize: 12, weight: .regular)
         timeLabel.translatesAutoresizingMaskIntoConstraints = false

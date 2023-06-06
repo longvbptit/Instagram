@@ -80,14 +80,13 @@ class ProfileChangeViewController: UIViewController {
     func addSeparatorNav() {
         let sepa = UIView()
         view.addSubview(sepa)
-        sepa.backgroundColor = .gray
-        sepa.alpha = 0.3
+        sepa.backgroundColor = .systemGray5
         sepa.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             sepa.topAnchor.constraint(equalTo: navigationBarView.bottomAnchor, constant: -1),
             sepa.leftAnchor.constraint(equalTo: view.leftAnchor),
             sepa.rightAnchor.constraint(equalTo: view.rightAnchor),
-            sepa.heightAnchor.constraint(equalToConstant: 1)
+            sepa.heightAnchor.constraint(equalToConstant: 0.7)
         ])
     }
     

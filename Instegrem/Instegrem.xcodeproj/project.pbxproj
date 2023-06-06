@@ -10,6 +10,7 @@
 		246A6E112D157C396A6DA45D /* Pods_Instegrem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36DF8F3761BB19C56DF0DAA9 /* Pods_Instegrem.framework */; };
 		C711127C2A2A32F900CFFD6B /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C711127B2A2A32F900CFFD6B /* PostViewController.swift */; };
 		C711127F2A2A3AE200CFFD6B /* PostStatusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C711127E2A2A3AE200CFFD6B /* PostStatusViewController.swift */; };
+		C715C5202A2F4FFC002C8DBD /* DetailPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C715C51F2A2F4FFC002C8DBD /* DetailPostViewController.swift */; };
 		C71A4F9F2A171B8F003F4B9D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71A4F9E2A171B8F003F4B9D /* AppDelegate.swift */; };
 		C71A4FA12A171B8F003F4B9D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71A4FA02A171B8F003F4B9D /* SceneDelegate.swift */; };
 		C71A4FA82A171B91003F4B9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C71A4FA72A171B91003F4B9D /* Assets.xcassets */; };
@@ -64,6 +65,7 @@
 		36DF8F3761BB19C56DF0DAA9 /* Pods_Instegrem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Instegrem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C711127B2A2A32F900CFFD6B /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		C711127E2A2A3AE200CFFD6B /* PostStatusViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStatusViewController.swift; sourceTree = "<group>"; };
+		C715C51F2A2F4FFC002C8DBD /* DetailPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPostViewController.swift; sourceTree = "<group>"; };
 		C71A4F9B2A171B8F003F4B9D /* Instegrem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instegrem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C71A4F9E2A171B8F003F4B9D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C71A4FA02A171B8F003F4B9D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 				C7E2E32D2A1FA81400DF0754 /* ProfileCreateViewController.swift */,
 				C7E2E3332A1FC43800DF0754 /* ProfileMoreViewController.swift */,
 				C764B7472A21AF0B0013ED40 /* ProfileAddAccountViewController.swift */,
+				C715C51F2A2F4FFC002C8DBD /* DetailPostViewController.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -572,6 +575,7 @@
 				C71A4FA12A171B8F003F4B9D /* SceneDelegate.swift in Sources */,
 				C795B19E2A1DFFA50067F7D5 /* StorySavedCollectionViewCell.swift in Sources */,
 				C7B9E5B72A23B5BA00D2E94D /* SignInViewController.swift in Sources */,
+				C715C5202A2F4FFC002C8DBD /* DetailPostViewController.swift in Sources */,
 				C71A4FBC2A172990003F4B9D /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

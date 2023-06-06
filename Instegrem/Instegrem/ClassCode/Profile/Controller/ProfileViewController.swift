@@ -99,6 +99,7 @@ class ProfileViewController: UIViewController {
             strongSelf.posts = data
             for vc in strongSelf.childBottomVC {
                 vc.posts = strongSelf.posts
+                vc.delegate = strongSelf
             }
             
             self?.updateBottom()
@@ -252,23 +253,6 @@ class ProfileViewController: UIViewController {
         bottomBarViewWidthConstraint.constant = (view.frame.width - 3) / CGFloat(childBottomVC.count)
         
     }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-//        if let scrollView = childBottomVC[currentIndex].collectionView {
-//            scrollView.panGestureRecognizer.require(toFail: overlayScrollView.panGestureRecognizer)
-//        }
-//        updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
-//
-//        isHorizontalBottomScroll = true
-//
-//        if barCollectionView.numberOfItems(inSection: 0) > 0 {
-//            let indexPath = IndexPath(item: 0, section: 0)
-//            barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
-//            //                previosSelectedIndexPath = indexPath
-//        }
-    }
     
     func configBioLabel() {
         if bioLabel.requiredHeight > 18*3 {
@@ -298,7 +282,6 @@ class ProfileViewController: UIViewController {
         vc.pageImage = "ic-posts"
         vc.count = 50
         vc.color = .black
-//        vc.posts = posts
         
         let vc1 = ProfileBottomViewController()
         vc1.pageIndex = 1
@@ -306,15 +289,13 @@ class ProfileViewController: UIViewController {
         vc1.pageImage = "ic-reel"
         vc1.count = 20
         vc1.color = .red
-//        vc1.posts = posts
-        
+
         let vc2 = ProfileBottomViewController()
         vc2.pageIndex = 2
         vc2.pageTitle = "Tag"
         vc2.pageImage = "ic-tag"
         vc2.count = 2
         vc2.color = .green
-//        vc2.posts = posts
         
         return [vc, vc1, vc2]
     }
@@ -542,5 +523,15 @@ extension ProfileViewController: UpdateUserInfoDelegate {
         }
         self.user = user
         updateUI()
+    }
+}
+
+extension ProfileViewController: PostProfileDelegate {
+    func gotoDetaiPost(posts: [Post], type: String, indexPath: IndexPath) {
+        let vc = DetailPostViewController()
+        vc.posts = posts
+        vc.type = type
+        vc.indexPath = indexPath
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

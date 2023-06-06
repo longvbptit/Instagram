@@ -7,10 +7,14 @@
 
 import UIKit
 
+protocol PostProfileDelegate: NSObject {
+    func gotoDetaiPost(posts: [Post], type: String, indexPath: IndexPath)
+}
+
 class ProfileBottomViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate  {
     
     var collectionView: UICollectionView!
-    
+    weak var delegate: PostProfileDelegate!
     var pageIndex: Int = 0
     var pageTitle: String?
     var pageImage: String?
@@ -23,6 +27,10 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
         }
     }
     
+    deinit {
+        print("DEBUG: DEINIT ProfileBottomViewController")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -33,8 +41,6 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
         collectionView.dataSource = self
         
     }
-    
-    
     
     func layoutCollection() {
         view.addSubview(collectionView)
@@ -80,7 +86,7 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
     //    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        delegate.gotoDetaiPost(posts: posts, type: "Posts", indexPath: indexPath)
     }
 }
 
