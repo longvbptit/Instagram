@@ -7,22 +7,33 @@
 
 import Foundation
 import UIKit
-
+import SDWebImage
+import FirebaseAuth
 class TabBarController: UITabBarController {
     
-    
+    var user: User!
     override func viewDidLoad() {
+//        SDImageCache.shared.config.shouldCacheImagesInMemory = false
         view.backgroundColor = .systemBackground
         UITabBar.appearance().barTintColor = .systemBackground
         tabBar.tintColor = .label
-        setupVCs()
+        getCurrentUser()
 //        self.selectedIndex = 4
     }
     
     deinit {
         print("DEBUG: DEINIT TabBarController")
     }
-    
+    func getCurrentUser() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        UserService.getUser(uid: uid, completion: { [weak self] dataUser, err in
+            if err != nil {
+                return
+            }
+            self?.user = User(uid: dataUser["uid"] as! String, dictionary: dataUser)
+            self?.setupVCs()
+        })
+    }
     func setupVCs() {
         viewControllers = [
             createNavController(for: HomeViewController(), title: NSLocalizedString("Home", comment: ""), image: UIImage(named: "ic-home")!),

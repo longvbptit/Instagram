@@ -47,7 +47,8 @@ class HomeService {
             }
             var posts: [Post] = []
             var countData = 0
-            for document in querySnapshot!.documents {
+            guard let querySnapshot = querySnapshot else { completion([], nil); return}
+            for document in querySnapshot.documents {
                 let data = document.data()
                 UserService.getUser(uid: data["uid"] as! String, completion: { dataUser, err in
                     if let error = err {
@@ -58,11 +59,32 @@ class HomeService {
                     let post = Post(user: user, dictionary: data)
                     posts.append(post)
                     countData += 1
-                    if countData == querySnapshot!.documents.count {
+                    if countData == querySnapshot.documents.count {
                         posts = posts.sorted { $0.time > $1.time }
                         completion(posts, nil)
                     }
                 })
+            }
+        })
+    }
+    
+    public static func fetchUserPosts(user: User, completion: @escaping([Post], Error?) -> Void) {
+        db.collection("post").whereField("uid", isEqualTo: user.uid).getDocuments(completion: { querySnapshot, err in
+            if let error = err {
+                completion([],error)
+                return
+            }
+            var posts: [Post] = []
+            var countData = 0
+            guard let querySnapshot = querySnapshot else { completion([], nil); return}
+            for document in querySnapshot.documents {
+                let post = Post(user: user, dictionary: document.data())
+                posts.append(post)
+                countData += 1
+                if countData == querySnapshot.documents.count {
+                    posts = posts.sorted { $0.time > $1.time }
+                    completion(posts, nil)
+                }
             }
         })
     }

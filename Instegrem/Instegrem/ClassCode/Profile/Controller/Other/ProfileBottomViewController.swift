@@ -17,6 +17,11 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
     var color: UIColor?
     var count = 0
     var sizeCell: CGSize!
+    var posts: [Post] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,17 +64,15 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return count
+        return posts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileBottomCollectionViewCell", for: indexPath) as! ProfileBottomCollectionViewCell
         //        cell.image.image = UIImage(named: "avt")
-        cell.image.image = UIImage(named: "avt")
+        cell.image.sd_setImage(with: URL(string: posts[indexPath.row].postImage.image))
         return cell
     }
-    
-    
     //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     //        let width = (collectionView.frame.width - 2) / 3
     //

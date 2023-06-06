@@ -9,6 +9,7 @@ import Foundation
 
 import FirebaseAuth
 import FirebaseFirestore
+import SDWebImage
 
 struct CreateAccountInfo {
     var email = ""
@@ -39,6 +40,7 @@ class AuthService {
     public static func logOut() {
         do {
             try Auth.auth().signOut()
+            SDImageCache.shared.clearMemory()
         } catch {
             print("DEBUG: Cannot LogOut")
         }

@@ -8,7 +8,6 @@
 import UIKit
 
 class HomeViewController: UIViewController {
-    
     var navigationBar: CustomNavigationBar!
     var collectionView: UICollectionView!
     var dataHome: [Post] = [] {
@@ -160,15 +159,24 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.identifier, for: indexPath) as! PostCollectionViewCell
             cell.post = dataHome[indexPath.row]
+            cell.delegate = self
             return cell
         }
        
     }
-    
     
 }
 
 enum Section: Int {
     case story
     case post
+}
+
+extension HomeViewController: PostDelegate {
+    func gotoProfile(user: User) {
+        let vc = ProfileViewController()
+        vc.isOrigin = false
+        vc.user = user
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }

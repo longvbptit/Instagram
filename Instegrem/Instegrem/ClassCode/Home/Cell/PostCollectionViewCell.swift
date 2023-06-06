@@ -8,10 +8,14 @@
 import UIKit
 import SDWebImage
 
+protocol PostDelegate: AnyObject {
+    func gotoProfile(user: User)
+}
+
 class PostCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "PostCollectionViewCell"
-    
+    weak var delegate: PostDelegate!
     var isSetData: Bool = false
     var postImageRattio: CGFloat = 1
     var post: Post! {
@@ -35,14 +39,15 @@ class PostCollectionViewCell: UICollectionViewCell {
         avatarButton.imageView?.contentMode = .scaleToFill
         avatarButton.cornerRadius = 18
         avatarButton.clipsToBounds = true
+        avatarButton.addTarget(self, action: #selector(gotoProfile(_:)), for: .touchUpInside)
         return avatarButton
     }()
     
     lazy var nameButton: UIButton = {
         let nameButton = UIButton(type: .system)
-        
         nameButton.setTitleColor(.black, for: .normal)
         nameButton.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
+        nameButton.addTarget(self, action: #selector(gotoProfile(_:)), for: .touchUpInside)
         return nameButton
     }()
     
@@ -153,6 +158,7 @@ class PostCollectionViewCell: UICollectionViewCell {
         userNameLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         
         userNameButton = UIButton(type: .system)
+        userNameButton.addTarget(self, action: #selector(gotoProfile(_:)), for: .touchUpInside)
         contentView.addSubview(userNameButton)
         userNameButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -224,6 +230,10 @@ class PostCollectionViewCell: UICollectionViewCell {
         userNameButtonHeightConstraint.isActive = false
         userNameButtonHeightConstraint = userNameButton.widthAnchor.constraint(equalToConstant: userNameLabel.intrinsicContentSize.width)
         userNameButtonHeightConstraint.isActive = true
+    }
+    
+    @objc func gotoProfile(_ sender: UIButton) {
+        delegate.gotoProfile(user: post.user)
     }
     
 }

@@ -50,24 +50,18 @@ class ProfileViewController: UIViewController {
     var firstLeftButton: UIButton!
     
     var user: User!
+    
+    var isOrigin: Bool = true
+    
+    var posts: [Post] = []
+
     deinit {
         print("DEBUG: DEINIT - Profile deinit")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        UserService.getUser(uid: uid, completion: { [weak self] data, error in
-            if let error = error {
-                print("Cant get user. Error: \(error)")
-                return
-            }
-            self?.user = User(uid: uid , dictionary: data)
-            self?.avatarImage.sd_setImage(with: URL(string: self?.user.avatar ?? ""), placeholderImage: UIImage(named: "ic-avatar_default"))
-            self?.updateUI()
-        })
-        
+        addChildVC()
         settingUI()
         setUpBarColletion()
         layoutOverlayScrollView()
@@ -75,6 +69,55 @@ class ProfileViewController: UIViewController {
         setupStoryCollection()
         changeProfileButton.addTarget(self, action: #selector(changeProfileButtonTapped(_:)), for: .touchUpInside)
         
+        if isOrigin {
+            getCurrentUser()
+        } else {
+            getOtherUser()
+        }
+        
+    }
+    
+    func getCurrentUser() {
+        let tabbar = tabBarController as! TabBarController
+        user = tabbar.user
+        getOtherUser()
+    }
+    
+    func getOtherUser() {
+        self.avatarImage.sd_setImage(with: URL(string: self.user.avatar), placeholderImage: UIImage(named: "ic-avatar_default"))
+        self.updateUI()
+    }
+    
+    func getPosts() {
+        HomeService.fetchUserPosts(user: user, completion: { [weak self] data, error in
+            guard let strongSelf = self else { return }
+            if let error = error {
+                print("Cant get posts. Error: \(error)")
+                return
+            }
+            
+            strongSelf.posts = data
+            for vc in strongSelf.childBottomVC {
+                vc.posts = strongSelf.posts
+            }
+            
+            self?.updateBottom()
+        })
+    }
+    
+    func updateBottom() {
+        if let scrollView = childBottomVC[currentIndex].collectionView {
+            scrollView.panGestureRecognizer.require(toFail: overlayScrollView.panGestureRecognizer)
+        }
+        updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
+        
+        isHorizontalBottomScroll = true
+        
+        if barCollectionView.numberOfItems(inSection: 0) > 0 {
+            let indexPath = IndexPath(item: 0, section: 0)
+            barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
+            //                previosSelectedIndexPath = indexPath
+        }
     }
     
     func settingUI() {
@@ -84,7 +127,11 @@ class ProfileViewController: UIViewController {
         avatarImage.clipsToBounds = true
         avatarImage.layer.cornerRadius = 40
         indicator.addAnimation()
-        setupNavBar()
+        if isOrigin {
+            setupNavBar()
+        } else {
+            setUpOtherUserNavBar()
+        }
         
         horizontalContainerView.isPagingEnabled = true
         horizontalContainerView.bounces = true
@@ -94,8 +141,9 @@ class ProfileViewController: UIViewController {
     }
     
     func updateUI() {
-        
-        firstLeftButton.setTitle(user.userName, for: .normal)
+        if isOrigin {
+            firstLeftButton.setTitle(user.userName, for: .normal)
+        }
         fullNameLabel.text = user.name
         bioLabel.text = user.bio
         bioLabel.numberOfLines = 0
@@ -117,7 +165,6 @@ class ProfileViewController: UIViewController {
     
     func setupNavBar() {
         firstLeftButton = UIButton(type: .system)
-        firstLeftButton.setTitle("user_name", for: .normal)
         firstLeftButton.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         firstLeftButton.setTitleColor(UIColor.black, for: .normal)
         firstLeftButton.addTarget(self, action: #selector(buttonUserTapped(_:)), for: .touchUpInside)
@@ -149,6 +196,29 @@ class ProfileViewController: UIViewController {
         ])
     }
     
+    func setUpOtherUserNavBar() {
+        firstLeftButton = UIButton(type: .system)
+        firstLeftButton.setImage(UIImage(named: "ic-back_small")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        firstLeftButton.addTarget(self, action: #selector(backButtonTapped(_:)), for: .touchUpInside)
+        
+        let centerButton = UIButton()
+        centerButton.setTitle(user.userName, for: .normal)
+        centerButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+        centerButton.setTitleColor(UIColor.black, for: .normal)
+        centerButton.isUserInteractionEnabled = false
+        
+        let naviBar = CustomNavigationBar(leftButtons: [firstLeftButton], centerButton: centerButton)
+        naviBar.backgroundColor = UIColor.white
+        navBar.addSubview(naviBar)
+        naviBar.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            naviBar.topAnchor.constraint(equalTo: navBar.topAnchor),
+            naviBar.bottomAnchor.constraint(equalTo: navBar.bottomAnchor),
+            naviBar.leftAnchor.constraint(equalTo: navBar.leftAnchor),
+            naviBar.rightAnchor.constraint(equalTo: navBar.rightAnchor)
+        ])
+    }
+    
     func layoutOverlayScrollView() {
         overlayScrollView = UIScrollView()
         overlayScrollView.showsVerticalScrollIndicator = false
@@ -169,33 +239,35 @@ class ProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
         horizontalContainerView.contentSize = CGSize(width: view.frame.width * 3, height: horizontalContainerView.contentSize.height)
-        addChildVC()
+
     }
     
     override func viewWillLayoutSubviews() {
         for (index, childVC) in childBottomVC.enumerated() {
             childVC.view.frame = CGRect(x: CGFloat(index) * view.bounds.width, y: 0, width: view.bounds.width, height:  horizontalContainerView.bounds.height)
-            childVC.view.autoresizingMask = [.flexibleHeight, .flexibleWidth]
             horizontalContainerView.addSubview(childVC.view)
             childVC.didMove(toParent: self)
         }
+        getPosts()
+        bottomBarViewWidthConstraint.constant = (view.frame.width - 3) / CGFloat(childBottomVC.count)
+        
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        if let scrollView = childBottomVC[currentIndex].collectionView {
-            scrollView.panGestureRecognizer.require(toFail: overlayScrollView.panGestureRecognizer)
-        }
-        updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
-        
-        isHorizontalBottomScroll = true
-        
-        if barCollectionView.numberOfItems(inSection: 0) > 0 {
-            let indexPath = IndexPath(item: 0, section: 0)
-            barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
-            //                previosSelectedIndexPath = indexPath
-        }
+
+//        if let scrollView = childBottomVC[currentIndex].collectionView {
+//            scrollView.panGestureRecognizer.require(toFail: overlayScrollView.panGestureRecognizer)
+//        }
+//        updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
+//
+//        isHorizontalBottomScroll = true
+//
+//        if barCollectionView.numberOfItems(inSection: 0) > 0 {
+//            let indexPath = IndexPath(item: 0, section: 0)
+//            barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
+//            //                previosSelectedIndexPath = indexPath
+//        }
     }
     
     func configBioLabel() {
@@ -213,7 +285,6 @@ class ProfileViewController: UIViewController {
     
     func addChildVC() {
         childBottomVC = setupChildViewController()
-        bottomBarViewWidthConstraint.constant = (view.frame.width - 3) / CGFloat(childBottomVC.count)
         for childVC in childBottomVC {
             addChild(childVC)
         }
@@ -227,6 +298,7 @@ class ProfileViewController: UIViewController {
         vc.pageImage = "ic-posts"
         vc.count = 50
         vc.color = .black
+//        vc.posts = posts
         
         let vc1 = ProfileBottomViewController()
         vc1.pageIndex = 1
@@ -234,6 +306,7 @@ class ProfileViewController: UIViewController {
         vc1.pageImage = "ic-reel"
         vc1.count = 20
         vc1.color = .red
+//        vc1.posts = posts
         
         let vc2 = ProfileBottomViewController()
         vc2.pageIndex = 2
@@ -241,6 +314,7 @@ class ProfileViewController: UIViewController {
         vc2.pageImage = "ic-tag"
         vc2.count = 2
         vc2.color = .green
+//        vc2.posts = posts
         
         return [vc, vc1, vc2]
     }
@@ -309,6 +383,10 @@ class ProfileViewController: UIViewController {
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .overFullScreen
         present(nav, animated: true)
+    }
+    
+    @objc func backButtonTapped(_ sender: UIButton) {
+        navigationController?.popViewController(animated: true)
     }
     
 }
