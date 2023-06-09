@@ -24,6 +24,7 @@ class PostStatusViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         configUI()
+        self.hideKeyboardWhenTappedAround()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -89,7 +90,7 @@ class PostStatusViewController: UIViewController {
     
     func addSeparatorNav() {
         let sepa = UIView()
-        view.addSubview(sepa)
+        navigationBar.addSubview(sepa)
         sepa.backgroundColor = .gray
         sepa.alpha = 0.3
         sepa.translatesAutoresizingMaskIntoConstraints = false
@@ -117,7 +118,9 @@ class PostStatusViewController: UIViewController {
         let config = UIButton.Configuration.plain()
         rightButton.configuration = config
         rightButton.configuration?.showsActivityIndicator = true
-        HomeService.upLoadPost(status: postStatusTextView.text, postImage: postImage, completion: { [weak self] error in
+        HomeService.upLoadPost(status: postStatusTextView.textColor == UIColor.lightGray ? "" : postStatusTextView.text,
+                               postImage: postImage,
+                               completion: { [weak self] error in
             guard let strongSelf = self else { return }
             if let error = error {
                 strongSelf.rightButton.setTitle("Chia sẻ", for: .normal)
@@ -125,7 +128,7 @@ class PostStatusViewController: UIViewController {
                 print("Can't crate post. Error: \(error)")
                 return
             }
-            
+            NotificationCenter.default.post(name: Notification.Name("PostNewStatus"), object: nil)
             strongSelf.tabBarController?.selectedIndex = 0
             strongSelf.navigationController?.popViewController(animated: false)
             
@@ -135,9 +138,13 @@ class PostStatusViewController: UIViewController {
     @objc func addImageTapGesture(_ gesture: UITapGestureRecognizer) {
         let scale = view.bounds.width / postImageView.bounds.width
         let trans = CGAffineTransform(scaleX: scale, y: scale)
-        UIView.animate(withDuration: 0.3, animations: {
+        view.endEditing(true)
+        UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, animations: {
             self.postImageView.transform = trans
             self.postImageView.center = self.view.center
+            self.navigationBar.alpha = 0.3
+            self.postStatusTextView.alpha = 0.3
+            self.view.backgroundColor?.withAlphaComponent(0.3)
         }) { _ in
             self.postImageView.removeGestureRecognizer(self.tapImageGesture)
             self.view.addGestureRecognizer(self.tapViewGesture)
@@ -145,9 +152,12 @@ class PostStatusViewController: UIViewController {
     }
     
     @objc func addViewTapGesture(_ gesture: UITapGestureRecognizer) {
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, animations: {
             self.postImageView.transform = .identity
             self.postImageView.center = self.centerOriginImage
+            self.navigationBar.alpha = 1
+            self.postStatusTextView.alpha = 1
+            self.view.backgroundColor?.withAlphaComponent(1)
         }) { _ in
             self.view.removeGestureRecognizer(self.tapViewGesture)
             self.postImageView.addGestureRecognizer(self.tapImageGesture)

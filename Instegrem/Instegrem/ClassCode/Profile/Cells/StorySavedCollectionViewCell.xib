@@ -36,6 +36,13 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic-add_story" translatesAutoresizingMaskIntoConstraints="NO" id="Se8-46-sNU">
+                                <rect key="frame" x="107.66666666666667" y="107" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="20" id="Z9z-ap-Wqd"/>
+                                    <constraint firstAttribute="width" secondItem="Se8-46-sNU" secondAttribute="height" multiplier="1:1" id="zNX-75-H5f"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -43,8 +50,10 @@
                             <constraint firstItem="w0M-C2-JMB" firstAttribute="top" secondItem="6X1-0Y-3n9" secondAttribute="top" constant="8" id="LVZ-d2-XUU"/>
                             <constraint firstItem="zB2-7C-FkP" firstAttribute="centerX" secondItem="6X1-0Y-3n9" secondAttribute="centerX" id="hCg-L2-cN6"/>
                             <constraint firstAttribute="bottom" secondItem="zB2-7C-FkP" secondAttribute="bottom" constant="4" id="laW-nd-XOG"/>
+                            <constraint firstItem="Se8-46-sNU" firstAttribute="bottom" secondItem="w0M-C2-JMB" secondAttribute="bottom" id="oMd-e3-Tnq"/>
                             <constraint firstAttribute="trailing" secondItem="zB2-7C-FkP" secondAttribute="trailing" constant="4" id="pQJ-kc-LJU"/>
                             <constraint firstItem="w0M-C2-JMB" firstAttribute="centerX" secondItem="6X1-0Y-3n9" secondAttribute="centerX" id="rfY-1T-f0P"/>
+                            <constraint firstItem="Se8-46-sNU" firstAttribute="trailing" secondItem="w0M-C2-JMB" secondAttribute="trailing" id="ynb-Am-hjD"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -58,14 +67,17 @@
             </constraints>
             <size key="customSize" width="136" height="155"/>
             <connections>
+                <outlet property="addStoryImage" destination="Se8-46-sNU" id="Wht-X2-ATe"/>
                 <outlet property="storyImage" destination="w0M-C2-JMB" id="BHP-bv-3le"/>
                 <outlet property="storyLabel" destination="zB2-7C-FkP" id="SS9-Bc-h0F"/>
+                <outlet property="widthAddStory" destination="Z9z-ap-Wqd" id="zel-4c-3vR"/>
             </connections>
             <point key="canvasLocation" x="54.961832061068698" y="0.35211267605633806"/>
         </collectionViewCell>
     </objects>
     <resources>
         <image name="avt" width="150" height="150"/>
+        <image name="ic-add_story" width="20" height="20"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

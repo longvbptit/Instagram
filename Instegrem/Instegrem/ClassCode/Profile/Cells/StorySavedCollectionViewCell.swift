@@ -9,6 +9,8 @@ import UIKit
 
 class StorySavedCollectionViewCell: UICollectionViewCell {
 
+    @IBOutlet weak var addStoryImage: UIImageView!
+    @IBOutlet weak var widthAddStory: NSLayoutConstraint!
     @IBOutlet weak var storyLabel: UILabel!
     @IBOutlet weak var storyImage: UIImageView!
     @IBOutlet weak var storyView: UIView!

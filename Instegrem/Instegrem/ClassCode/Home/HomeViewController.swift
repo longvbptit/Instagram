@@ -6,25 +6,49 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class HomeViewController: UIViewController {
     var navigationBar: CustomNavigationBar!
     var collectionView: UICollectionView!
+    var user: User!
     var dataHome: [Post] = [] {
         didSet {
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
+//            DispatchQueue.main.async {
+//                self.collectionView.reloadData()
+//            }
         }
     }
+    var story: [Story] = [Story(image: "ic-story0", title: "Tin của bạn"),
+                          Story(image: "ic-story1", title: "Tin 1"),
+                          Story(image: "ic-story2", title: "Tin 2"),
+                          Story(image: "ic-story3", title: "Tin 3"),
+                          Story(image: "ic-story4", title: "Tin 4"),
+                          Story(image: "ic-story5", title: "Tin 5"),
+                          Story(image: "ic-story6", title: "Tin 6"),
+                          Story(image: "ic-story7", title: "Tin 7"),
+                          Story(image: "ic-story8", title: "Tin 8"),
+                          Story(image: "ic-story9", title: "Tin 9")]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        getCurrentUser()
         fetchPosts()
         configUI()
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name("PostNewStatus"), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = true
+    }
+    
+    func getCurrentUser() {
+        let tabbar = tabBarController as! TabBarController
+        user = tabbar.user
+    }
+    
+    @objc func reloadData() {
+        fetchPosts()
     }
     
     func configUI() {
@@ -123,6 +147,9 @@ class HomeViewController: UIViewController {
                 self?.dataHome = []
             }
             self?.dataHome = data
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+            }
         })
     }
     
@@ -151,13 +178,22 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch Section(rawValue: indexPath.section) {
         case .story:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StorySavedCollectionViewCell", for: indexPath) as! StorySavedCollectionViewCell
-            cell.storyImage.cornerRadius = 32
-            if indexPath.row > 0 {
-                cell.storyLabel.text = "Ting thứ \(indexPath.row)"
+            if indexPath.row == 0 {
+                cell.addStoryImage.isHidden = false
+                cell.storyImage.sd_setImage(with: URL(string: user.avatar))
+            } else {
+                cell.storyImage.image = UIImage(named: story[indexPath.row].image)
+                cell.addStoryImage.isHidden = true
             }
+            
+            cell.storyImage.cornerRadius = 32
+            cell.widthAddStory.constant = 64/3
+            cell.storyLabel.text = story[indexPath.row].title
+            cell.storyImage.contentMode = .scaleAspectFill
             return cell
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.identifier, for: indexPath) as! PostCollectionViewCell
+            cell.indexPath = indexPath
             cell.post = dataHome[indexPath.row]
             cell.delegate = self
             return cell
@@ -173,10 +209,68 @@ enum Section: Int {
 }
 
 extension HomeViewController: PostDelegate {
+    func gotoComment(indexPath: IndexPath) {
+        let vc = CommentViewController()
+        vc.post = dataHome[indexPath.row]
+        vc.indexPath = indexPath
+        vc.delegate = self
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func gotoLike(indexPath: IndexPath) {
+        let vc = LikeViewController()
+        vc.idPost = dataHome[indexPath.row].idPost
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func gotoProfile(user: User) {
         let vc = ProfileViewController()
         vc.isOrigin = false
         vc.user = user
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func likePost(indexPath: IndexPath, isLike: Bool, numberOfLike: Int) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        if isLike {
+            HomeService.likeStatus(idPost: dataHome[indexPath.row].idPost, uid: uid, completion: { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+            })
+        } else {
+            HomeService.unLikeStatus(idPost: dataHome[indexPath.row].idPost, uid: uid, completion: { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+            })
+        }
+        dataHome[indexPath.row].isLiked = isLike
+        dataHome[indexPath.row].numberOfLike = numberOfLike
+        UIView.performWithoutAnimation {
+            collectionView.performBatchUpdates({
+                collectionView.reloadItems(at: [indexPath])
+            }, completion: nil)
+        }
+    }
+
+}
+
+struct Story {
+    var image: String = ""
+    var title: String = ""
+}
+
+extension HomeViewController: CommentPostDelegate {
+    func updateNumberOfCommentButton(indexPath: IndexPath, numberOfComment: Int) {
+        dataHome[indexPath.row].numberOfComment = numberOfComment
+        UIView.performWithoutAnimation {
+            collectionView.performBatchUpdates({
+                collectionView.reloadItems(at: [indexPath])
+            }, completion: nil)
+        }
     }
 }

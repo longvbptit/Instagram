@@ -10,12 +10,13 @@ import UIKit
 class ProfileChangeDetailViewController: UIViewController {
     
     var navigationBar: CustomNavigationBar!
-    var titleTextView: UILabel!
-    var editTextField: UITextView!
+    var titleLabel: UILabel!
+    var editTextView: UITextView!
     var dataUser: String!
     var firstRightButton: UIButton!
     weak var delegate: ProfileEditDetailDelegate!
     var indexInfo: Int!
+    var textViewHeightConstraint: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
         configUI()
@@ -47,25 +48,23 @@ class ProfileChangeDetailViewController: UIViewController {
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         
-        titleTextView = UILabel()
-        titleTextView.text = title
-        titleTextView.textColor = .systemGray3
-        titleTextView.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        view.addSubview(titleTextView)
-        titleTextView.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.textColor = .systemGray3
+        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        view.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        editTextField = UITextView()
-        editTextField.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-        editTextField.text = dataUser
-        editTextField.sizeToFit()
-        editTextField.isScrollEnabled = false
-        //        editTextField.clearButtonMode = .whileEditing
-        editTextField.isEditable = true
-        view.addSubview(editTextField)
-        editTextField.translatesAutoresizingMaskIntoConstraints = false
-        editTextField.delegate = self
-        editTextField.becomeFirstResponder()
-        
+        editTextView = UITextView()
+        editTextView.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        editTextView.text = dataUser
+        editTextView.sizeToFit()
+        editTextView.isScrollEnabled = false
+        editTextView.isEditable = true
+        view.addSubview(editTextView)
+        editTextView.translatesAutoresizingMaskIntoConstraints = false
+        editTextView.delegate = self
+        editTextView.becomeFirstResponder()
         view.backgroundColor = .white
         
         NSLayoutConstraint.activate([
@@ -74,12 +73,12 @@ class ProfileChangeDetailViewController: UIViewController {
             navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             navigationBar.heightAnchor.constraint(equalToConstant: 44),
             
-            titleTextView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 6),
-            titleTextView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 12),
+            titleLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 6),
+            titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 12),
             
-            editTextField.topAnchor.constraint(equalTo: titleTextView.bottomAnchor, constant: 6),
-            editTextField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8),
-            editTextField.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            editTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
+            editTextView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 8),
+            editTextView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
         ])
         
         let bottomNav = UIView()
@@ -97,7 +96,7 @@ class ProfileChangeDetailViewController: UIViewController {
             bottomNav.widthAnchor.constraint(equalToConstant:view.frame.width),
             bottomNav.heightAnchor.constraint(equalToConstant: 1),
             
-            bottomEdit.topAnchor.constraint(equalTo: editTextField.bottomAnchor, constant: 8),
+            bottomEdit.topAnchor.constraint(equalTo: editTextView.bottomAnchor, constant: 8),
             bottomEdit.widthAnchor.constraint(equalToConstant: view.frame.width),
             bottomEdit.heightAnchor.constraint(equalToConstant: 1)
         ])
@@ -109,7 +108,7 @@ class ProfileChangeDetailViewController: UIViewController {
     
     @objc func doneButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
-        delegate.didChangeInfo(index: indexInfo, info: editTextField.text)
+        delegate.didChangeInfo(index: indexInfo, info: editTextView.text)
     }
     
 }

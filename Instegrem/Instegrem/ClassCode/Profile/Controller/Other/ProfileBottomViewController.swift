@@ -62,7 +62,7 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         group.interItemSpacing = .fixed(1.5)
         let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 1
+//        section.interGroupSpacing = 1
         let layout = UICollectionViewCompositionalLayout(section: section)
         view.layoutIfNeeded()
         return layout

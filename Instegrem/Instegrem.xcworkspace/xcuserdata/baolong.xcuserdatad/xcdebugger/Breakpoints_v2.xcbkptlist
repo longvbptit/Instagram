@@ -7,32 +7,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9DC7B56E-56B2-4960-ADAE-F3B307F980AF"
-            shouldBeEnabled = "Yes"
+            uuid = "78B74D53-EF48-4520-8FEB-5C76F3B1DDE9"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Instegrem/ClassCode/Profile/Controller/Other/ProfileBottomViewController.swift"
+            filePath = "Instegrem/ClassCode/Like/ViewController/LikeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
-            landmarkName = "collectionView(_:didSelectItemAt:)"
-            landmarkType = "7">
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "users"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D34C117F-36F7-4D1A-81FE-BED3B2F6D930"
-            shouldBeEnabled = "Yes"
+            uuid = "E1B8D406-AD58-40DC-A635-02B3AAEE1548"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Instegrem/ClassCode/Profile/Controller/ProfileViewController.swift"
+            filePath = "Instegrem/ClassCode/Like/ViewController/LikeViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "534"
-            endingLineNumber = "534"
-            landmarkName = "gotoDetaiPost(posts:type:indexPath:)"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
+            landmarkName = "getUserLiked()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

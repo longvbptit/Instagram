@@ -28,6 +28,7 @@ class CreateAccountViewController: UIViewController {
         loginButton.addTarget(self, action: #selector(loginButtonTapped(_:)), for: .touchUpInside)
         passwordTextField.isSecureTextEntry = true
         db = Firestore.firestore()
+        IQKeyboardManager.shared.keyboardDistanceFromTextField = 100
     }
     
     override func viewDidDisappear(_ animated: Bool) {

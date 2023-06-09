@@ -48,13 +48,24 @@ class ProfileViewController: UIViewController {
     var tapBioGesture: UITapGestureRecognizer!
     
     var firstLeftButton: UIButton!
-    
+        
     var user: User!
     
     var isOrigin: Bool = true
     
     var posts: [Post] = []
 
+    var story: [Story] = [Story(image: "ic-story0", title: "Tin của bạn"),
+                          Story(image: "ic-story1", title: "Tin 1"),
+                          Story(image: "ic-story2", title: "Tin 2"),
+                          Story(image: "ic-story3", title: "Tin 3"),
+                          Story(image: "ic-story4", title: "Tin 4"),
+                          Story(image: "ic-story5", title: "Tin 5"),
+                          Story(image: "ic-story6", title: "Tin 6"),
+                          Story(image: "ic-story7", title: "Tin 7"),
+                          Story(image: "ic-story8", title: "Tin 8"),
+                          Story(image: "ic-story9", title: "Tin 9")]
+    
     deinit {
         print("DEBUG: DEINIT - Profile deinit")
     }
@@ -119,6 +130,7 @@ class ProfileViewController: UIViewController {
             barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
             //                previosSelectedIndexPath = indexPath
         }
+        view.layoutIfNeeded()
     }
     
     func settingUI() {
@@ -395,10 +407,17 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == storySavedCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StorySavedCollectionViewCell", for: indexPath) as! StorySavedCollectionViewCell
-            cell.storyImage.cornerRadius = 28
-            if indexPath.row > 0 {
-                cell.storyLabel.text = "Ting thứ \(indexPath.row)"
+            if indexPath.row == 0 {
+                cell.addStoryImage.isHidden = false
+                cell.storyImage.sd_setImage(with: URL(string: user.avatar))
+            } else {
+                cell.storyImage.image = UIImage(named: story[indexPath.row].image)
+                cell.addStoryImage.isHidden = true
             }
+            cell.storyImage.cornerRadius = 28
+            cell.widthAddStory.constant = 56/3
+            cell.storyLabel.text = story[indexPath.row].title
+            cell.storyImage.contentMode = .scaleAspectFill
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileBarCollectionViewCell", for: indexPath) as! ProfileBarCollectionViewCell
@@ -532,6 +551,7 @@ extension ProfileViewController: PostProfileDelegate {
         vc.posts = posts
         vc.type = type
         vc.indexPath = indexPath
+        vc.user = user
         navigationController?.pushViewController(vc, animated: true)
     }
 }

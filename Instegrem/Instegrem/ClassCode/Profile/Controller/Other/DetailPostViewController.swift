@@ -10,9 +10,18 @@ import UIKit
 class DetailPostViewController: UIViewController {
     var navigationBar: CustomNavigationBar!
     var collectionView: UICollectionView!
-    var posts: [Post] = []
+    var posts: [Post] = [] {
+        didSet {
+            if collectionView != nil {
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            }
+        }
+    }
     var type: String!
     var indexPath: IndexPath!
+    var user: User!
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -85,6 +94,19 @@ class DetailPostViewController: UIViewController {
         }
     }
     
+    func getPosts() {
+        HomeService.fetchUserPosts(user: user, completion: { [weak self] data, error in
+            guard let strongSelf = self else { return }
+            if let error = error {
+                print("Cant get posts. Error: \(error)")
+                return
+            }
+            
+            strongSelf.posts = data
+            
+        })
+    }
+    
     func createLayout() -> UICollectionViewLayout{
         let itemWidth = view.frame.width
         let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(itemWidth), heightDimension: .estimated(300))
@@ -115,6 +137,7 @@ extension DetailPostViewController: UICollectionViewDelegate, UICollectionViewDa
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.identifier, for: indexPath) as! PostCollectionViewCell
+        cell.indexPath = indexPath
         cell.post = posts[indexPath.row]
         cell.delegate = self
         return cell
@@ -124,10 +147,58 @@ extension DetailPostViewController: UICollectionViewDelegate, UICollectionViewDa
 }
 
 extension DetailPostViewController: PostDelegate {
+    func gotoComment(indexPath: IndexPath) {
+        let vc = CommentViewController()
+        vc.post = posts[indexPath.row]
+        vc.indexPath = indexPath
+        vc.delegate = self
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func gotoLike(indexPath: IndexPath) {
+        let vc = LikeViewController()
+        vc.idPost = posts[indexPath.row].idPost
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func gotoProfile(user: User) {
         let vc = ProfileViewController()
         vc.isOrigin = false
         vc.user = user
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func likePost(indexPath: IndexPath, isLike: Bool, numberOfLike: Int) {
+        let uid = posts[0].user.uid
+        if isLike {
+            HomeService.likeStatus(idPost: posts[indexPath.row].idPost, uid: uid, completion: { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+            })
+        } else {
+            HomeService.unLikeStatus(idPost: posts[indexPath.row].idPost, uid: uid, completion: { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+            })
+        }
+        posts[indexPath.row].isLiked = isLike
+        posts[indexPath.row].numberOfLike = numberOfLike
+//        collectionView.reloadItems(at: [indexPath])
+    }
+}
+
+extension DetailPostViewController: CommentPostDelegate {
+    func updateNumberOfCommentButton(indexPath: IndexPath, numberOfComment: Int) {
+        posts[indexPath.row].numberOfComment = numberOfComment
+        UIView.performWithoutAnimation {
+            collectionView.performBatchUpdates({
+                collectionView.reloadItems(at: [indexPath])
+            }, completion: nil)
+        }
     }
 }
