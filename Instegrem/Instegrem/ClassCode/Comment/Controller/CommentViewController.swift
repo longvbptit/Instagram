@@ -33,6 +33,10 @@ class CommentViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         // Do any additional setup after loading the view.
     }
+
+    override func viewDidLayoutSubviews() {
+        inputTextView.becomeFirstResponder()
+    }
     
     deinit {
         print("DEBUG: DEINIT CommentViewController")
@@ -74,7 +78,6 @@ class CommentViewController: UIViewController {
         //        inputTextView.text = "Viết comment"
         inputTextView.textColor = .black
         inputTextView.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        inputTextView.becomeFirstResponder()
         inputTextView.sizeToFit()
         inputTextView.isScrollEnabled = true
         inputTextView.isEditable = true
