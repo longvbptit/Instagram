@@ -33,6 +33,10 @@ class CommentViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         // Do any additional setup after loading the view.
     }
+    
+    {
+        "Change"
+    }
 
     override func viewDidLayoutSubviews() {
         inputTextView.becomeFirstResponder()
