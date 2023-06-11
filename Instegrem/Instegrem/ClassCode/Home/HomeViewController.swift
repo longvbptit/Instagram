@@ -19,6 +19,14 @@ class HomeViewController: UIViewController {
 //            }
         }
     }
+    lazy var refreshControl: UIRefreshControl = {
+        let rfc = UIRefreshControl()
+        
+        return rfc
+    }()
+    
+    var loadingView: UIActivityIndicatorView = UIActivityIndicatorView()
+    
     var story: [Story] = [Story(image: "ic-story0", title: "Tin của bạn"),
                           Story(image: "ic-story1", title: "Tin 1"),
                           Story(image: "ic-story2", title: "Tin 2"),
@@ -32,9 +40,10 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configUI()
         getCurrentUser()
         fetchPosts()
-        configUI()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name("PostNewStatus"), object: nil)
     }
     
@@ -52,10 +61,15 @@ class HomeViewController: UIViewController {
     }
     
     func configUI() {
+        view.addSubview(loadingView)
+        loadingView.style = .large
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        refreshControl.addTarget(self, action: #selector(fetchPosts), for: .valueChanged)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(PostCollectionViewCell.self, forCellWithReuseIdentifier: PostCollectionViewCell.identifier)
+        collectionView.refreshControl = refreshControl
         view.addSubview(collectionView)
         collectionView.register(UINib(nibName: "StorySavedCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "StorySavedCollectionViewCell")
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -89,7 +103,10 @@ class HomeViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
             collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         
         ])
     }
@@ -141,15 +158,23 @@ class HomeViewController: UIViewController {
         }
     }
     
-    func fetchPosts() {
+    @objc func fetchPosts() {
+//        refreshControl.isHidden = true
+        getCurrentUser()
+        if self.dataHome.count == 0 {
+            view.bringSubviewToFront(loadingView)
+            loadingView.startAnimating()
+            loadingView.isHidden = false
+        }
         HomeService.fetchPost(completion: { [weak self] data, error in
+            self?.refreshControl.endRefreshing()
+            self?.loadingView.stopAnimating()
+//            self?.loadingView.isHidden = true
             if error != nil {
                 self?.dataHome = []
             }
             self?.dataHome = data
-            DispatchQueue.main.async {
-                self?.collectionView.reloadData()
-            }
+            self?.collectionView.reloadData()
         })
     }
     

@@ -46,6 +46,7 @@ class HomeService {
                 completion([],error)
                 return
             }
+            guard let currentUID = Auth.auth().currentUser?.uid else { return }
             var posts: [Post] = []
             var countData = 0
             guard let querySnapshot = querySnapshot else { completion([], nil); return}
@@ -56,23 +57,46 @@ class HomeService {
                         completion([], error)
                         return
                     }
-                    let user = User(uid: dataUser["uid"] as! String, dictionary: dataUser)
-                    HomeService.getNumberLikePost(idPost: document.documentID, completion: { numberOfLike, isLiked, err in
-                        
-                        HomeService.getNumberOfComment(idPost: document.documentID, completion: { numberOfComment, err in
-                            var post = Post(idPost:document.documentID, user: user, dictionary: document.data())
-                            post.numberOfLike = numberOfLike
-                            post.isLiked = isLiked
-                            post.numberOfComment = numberOfComment
-                            posts.append(post)
-                            countData += 1
-                            if countData == querySnapshot.documents.count {
-                                posts = posts.sorted { $0.time > $1.time }
-                                completion(posts, nil)
-                            }
+                    var user = User(uid: dataUser["uid"] as! String, dictionary: dataUser)
+                    if user.uid == currentUID {
+                        HomeService.getNumberLikePost(idPost: document.documentID, completion: { numberOfLike, isLiked, err in
+                            
+                            HomeService.getNumberOfComment(idPost: document.documentID, completion: { numberOfComment, err in
+                                var post = Post(idPost:document.documentID, user: user, dictionary: document.data())
+                                post.numberOfLike = numberOfLike
+                                post.isLiked = isLiked
+                                post.numberOfComment = numberOfComment
+                                posts.append(post)
+                                countData += 1
+                                if countData == querySnapshot.documents.count {
+                                    posts = posts.sorted { $0.time > $1.time }
+                                    completion(posts, nil)
+                                }
+                            })
+                            
                         })
-                        
-                    })
+                    } else {
+                        UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
+                            user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
+                            HomeService.getNumberLikePost(idPost: document.documentID, completion: { numberOfLike, isLiked, err in
+                                
+                                HomeService.getNumberOfComment(idPost: document.documentID, completion: { numberOfComment, err in
+                                    var post = Post(idPost:document.documentID, user: user, dictionary: document.data())
+                                    post.numberOfLike = numberOfLike
+                                    post.isLiked = isLiked
+                                    post.numberOfComment = numberOfComment
+                                    posts.append(post)
+                                    countData += 1
+                                    if countData == querySnapshot.documents.count {
+                                        posts = posts.sorted { $0.time > $1.time }
+                                        completion(posts, nil)
+                                    }
+                                })
+                                
+                            })
+                        })
+                    }
+                    
                 })
             }
         })
@@ -87,6 +111,7 @@ class HomeService {
             var posts: [Post] = []
             var countData = 0
             guard let querySnapshot = querySnapshot else { completion([], nil); return}
+            if querySnapshot.isEmpty { completion([], nil); return}
             for document in querySnapshot.documents {
                 //                let post = Post(idPost:document.documentID, user: user, dictionary: document.data())
                 //                posts.append(post)
@@ -159,7 +184,7 @@ class HomeService {
                 completion([], error)
                 return
             }
-            //            guard let uid = Auth.auth().currentUser?.uid else { return }
+            guard let uid = Auth.auth().currentUser?.uid else { return }
             var countUser = 0
             var users: [User] = []
             for (idUser, _) in data {
@@ -169,10 +194,20 @@ class HomeService {
                         return
                     }
                     countUser += 1
-                    let user = User(uid: idUser, dictionary: dataUser)
-                    users.append(user)
-                    if countUser == data.count {
-                        completion(users, nil)
+                    var user = User(uid: idUser, dictionary: dataUser)
+                    if user.uid != uid {
+                        UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
+                            user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
+                            users.append(user)
+                            if countUser == data.count {
+                                completion(users, nil)
+                            }
+                        })
+                    } else {
+                        users.append(user)
+                        if countUser == data.count {
+                            completion(users, nil)
+                        }
                     }
                 })
             }
@@ -199,6 +234,7 @@ class HomeService {
                 completion([], error)
                 return
             }
+            guard let currentUID = Auth.auth().currentUser?.uid else { return }
             var countComment = 0
             var comments: [Comment] = []
             for (_, dataComment) in data {
@@ -210,11 +246,22 @@ class HomeService {
                         return
                     }
                     countComment += 1
-                    let user = User(uid: uid, dictionary: dataUser)
-                    let comment = Comment(user: user, arr: arr)
-                    comments.append(comment)
-                    if countComment == data.count {
-                        completion(comments, nil)
+                    var user = User(uid: uid, dictionary: dataUser)
+                    if user.uid != currentUID {
+                        UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
+                            user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
+                            let comment = Comment(user: user, arr: arr)
+                            comments.append(comment)
+                            if countComment == data.count {
+                                completion(comments, nil)
+                            }
+                        })
+                    } else {
+                        let comment = Comment(user: user, arr: arr)
+                        comments.append(comment)
+                        if countComment == data.count {
+                            completion(comments, nil)
+                        }
                     }
                 })
             }

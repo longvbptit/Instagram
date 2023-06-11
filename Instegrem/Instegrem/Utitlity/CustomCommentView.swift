@@ -19,6 +19,7 @@ class CustomCommentView: UIView {
         self.avatarImageView = avatarImageView
         self.containerView = UIView()
         self.containerView.borderWidth = 1
+        self.containerView.layer.borderColor = UIColor.systemGray3.cgColor
         self.containerView.cornerRadius = 24
         self.containerView.clipsToBounds = true
         self.commentButton = commentButton

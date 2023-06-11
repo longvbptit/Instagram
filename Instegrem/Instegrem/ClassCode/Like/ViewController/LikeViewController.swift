@@ -7,18 +7,16 @@
 
 import UIKit
 
+protocol FollowUserDelegate: NSObject {
+    func followUser(uid: String, indexPath: IndexPath)
+}
+
 class LikeViewController: UIViewController {
 
     var tableView: UITableView!
     var navigationBar: CustomNavigationBar!
     var idPost: String!
-    var users: [User] = [] {
-        didSet {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
-    }
+    var users: [User] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -85,6 +83,7 @@ class LikeViewController: UIViewController {
                 return
             }
             self?.users = users
+            self?.tableView.reloadData()
         })
     }
     
@@ -109,6 +108,10 @@ extension LikeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LikeTableViewCell", for: indexPath) as! LikeTableViewCell
         cell.user = users[indexPath.row]
+        cell.delegate = self
+        cell.indexPath = indexPath
+        cell.updateFollowButton()
+        cell.updateData()
         cell.separatorInset = UIEdgeInsets(top: 0, left: tableView.frame.width/2, bottom: 0, right: tableView.frame.width/2)
         cell.selectionStyle = .none
         return cell
@@ -121,4 +124,28 @@ extension LikeViewController: UITableViewDelegate, UITableViewDataSource {
         navigationController?.pushViewController(vc, animated: true)
     }
     
+}
+
+extension LikeViewController: FollowUserDelegate {
+    func followUser(uid: String, indexPath: IndexPath) {
+        if users[indexPath.row].isFollowByCurrentUser == .notFollowYet {
+            UserService.followUser(uid: uid, completion: { [weak self] error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                self?.users[indexPath.row].isFollowByCurrentUser = .followed
+                self?.tableView.reloadRows(at: [indexPath], with: .none)
+            })
+        } else {
+            UserService.unfollowUser(uid: uid, completion: { [weak self] error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                self?.users[indexPath.row].isFollowByCurrentUser = .notFollowYet
+                self?.tableView.reloadRows(at: [indexPath], with: .none)
+            })
+        }
+    }
 }

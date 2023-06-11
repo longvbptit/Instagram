@@ -29,6 +29,11 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var storySavedCollectionView: UICollectionView!
     
     @IBOutlet weak var fullNameLabel: UILabel!
+    
+    @IBOutlet weak var numberOfPostLabel: UILabel!
+    @IBOutlet weak var numberOfFollowerLabel: UILabel!
+    @IBOutlet weak var numberOfFollowingLabel: UILabel!
+    
     var overlayScrollView: UIScrollView!
     var currentIndex: Int = 0
     var indicator: IGActivityIndicator!
@@ -41,6 +46,12 @@ class ProfileViewController: UIViewController {
             }
         }
     }
+
+    let currentUID = Auth.auth().currentUser?.uid ?? ""
+    
+    let refreshControl: UIRefreshControl = UIRefreshControl()
+    
+    var loadingView: UIActivityIndicatorView = UIActivityIndicatorView()
     
     var isHorizontalBottomScroll: Bool = false
     var previosSelectedIndexPath: IndexPath?
@@ -48,12 +59,28 @@ class ProfileViewController: UIViewController {
     var tapBioGesture: UITapGestureRecognizer!
     
     var firstLeftButton: UIButton!
+    
+    var centerButton: UIButton!
         
     var user: User!
     
     var isOrigin: Bool = true
     
-    var posts: [Post] = []
+    var posts: [Post] = [] {
+        didSet {
+            numberOfPostLabel.text = "\(posts.count)"
+        }
+    }
+    var followers: [User] = [] {
+        didSet {
+            numberOfFollowerLabel.text = "\(followers.count)"
+        }
+    }
+    var following: [User] = [] {
+        didSet {
+            numberOfFollowingLabel.text = "\(following.count)"
+        }
+    }
 
     var story: [Story] = [Story(image: "ic-story0", title: "Tin của bạn"),
                           Story(image: "ic-story1", title: "Tin 1"),
@@ -78,35 +105,81 @@ class ProfileViewController: UIViewController {
         layoutOverlayScrollView()
         horizontalContainerView.delegate = self
         setupStoryCollection()
-        changeProfileButton.addTarget(self, action: #selector(changeProfileButtonTapped(_:)), for: .touchUpInside)
-        
         if isOrigin {
             getCurrentUser()
         } else {
-            getOtherUser()
+            updateUserUI()
         }
+        if user.isFollowByCurrentUser == .currenUser {
+            changeProfileButton.addTarget(self, action: #selector(changeProfileButtonTapped(_:)), for: .touchUpInside)
+        } else {
+            changeProfileButton.addTarget(self, action: #selector(followUserButtonTapped(_:)), for: .touchUpInside)
+        }
+        setUpLoadingView()
         
+    }
+    
+    func updateFollowUserButton() {
+        switch(user.isFollowByCurrentUser) {
+        case .currenUser:
+            break
+        case .notFollowYet:
+            self.changeProfileButton.setTitle("Theo dõi", for: .normal)
+            self.changeProfileButton.setTitleColor(.white, for: .normal)
+            self.changeProfileButton.backgroundColor = UIColor(red: 41/255, green: 153/255, blue: 251/255, alpha: 1)
+        case .followed:
+            self.changeProfileButton.setTitle("Đang theo dõi", for: .normal)
+            self.changeProfileButton.setTitleColor(.black, for: .normal)
+            self.changeProfileButton.backgroundColor = .systemGray6
+        }
     }
     
     func getCurrentUser() {
         let tabbar = tabBarController as! TabBarController
         user = tabbar.user
-        getOtherUser()
+        updateUserUI()
     }
     
-    func getOtherUser() {
-        self.avatarImage.sd_setImage(with: URL(string: self.user.avatar), placeholderImage: UIImage(named: "ic-avatar_default"))
-        self.updateUI()
+    func updateUserUI() {
+        updateFollowUserButton()
+        updateUI()
+    }
+    
+    func getFollowers() {
+        UserService.getAllFolowers(uid: user.uid, completion: { [weak self] followers, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            self?.followers = followers
+        })
+    }
+    
+    func getFollowing() {
+        UserService.getAllFolowing(uid: user.uid, completion: { [weak self] following, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            self?.following = following
+        })
     }
     
     func getPosts() {
+        if self.posts.count == 0 {
+            view.bringSubviewToFront(loadingView)
+            loadingView.startAnimating()
+            loadingView.isHidden = false
+        }
         HomeService.fetchUserPosts(user: user, completion: { [weak self] data, error in
             guard let strongSelf = self else { return }
+            strongSelf.refreshControl.endRefreshing()
+            strongSelf.loadingView.stopAnimating()
+            strongSelf.loadingView.removeFromSuperview()
             if let error = error {
                 print("Cant get posts. Error: \(error)")
                 return
             }
-            
             strongSelf.posts = data
             for vc in strongSelf.childBottomVC {
                 vc.posts = strongSelf.posts
@@ -114,6 +187,19 @@ class ProfileViewController: UIViewController {
             }
             
             self?.updateBottom()
+        })
+    }
+    
+    @objc func reloadData() {
+        getPosts()
+        getFollowers()
+        getFollowing()
+        UserService.getUser(uid: user.uid, completion: { [weak self] dataUser, err in
+            if err != nil {
+                return
+            }
+            self?.user = User(uid: dataUser["uid"] as! String, dictionary: dataUser)
+            self?.updateUserUI()
         })
     }
     
@@ -156,7 +242,10 @@ class ProfileViewController: UIViewController {
     func updateUI() {
         if isOrigin {
             firstLeftButton.setTitle(user.userName, for: .normal)
+        } else {
+            centerButton.setTitle(user.userName, for: .normal)
         }
+        avatarImage.sd_setImage(with: URL(string: self.user.avatar), placeholderImage: UIImage(named: "ic-avatar_default"))
         fullNameLabel.text = user.name
         bioLabel.text = user.bio
         bioLabel.numberOfLines = 0
@@ -214,7 +303,7 @@ class ProfileViewController: UIViewController {
         firstLeftButton.setImage(UIImage(named: "ic-back_small")?.withRenderingMode(.alwaysOriginal), for: .normal)
         firstLeftButton.addTarget(self, action: #selector(backButtonTapped(_:)), for: .touchUpInside)
         
-        let centerButton = UIButton()
+        centerButton = UIButton()
         centerButton.setTitle(user.userName, for: .normal)
         centerButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
         centerButton.setTitleColor(UIColor.black, for: .normal)
@@ -262,6 +351,8 @@ class ProfileViewController: UIViewController {
             childVC.didMove(toParent: self)
         }
         getPosts()
+        getFollowers()
+        getFollowing()
         bottomBarViewWidthConstraint.constant = (view.frame.width - 3) / CGFloat(childBottomVC.count)
         
     }
@@ -284,6 +375,19 @@ class ProfileViewController: UIViewController {
         for childVC in childBottomVC {
             addChild(childVC)
         }
+    }
+    
+    func setUpLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.style = .medium
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        refreshControl.addTarget(self, action: #selector(reloadData), for: .valueChanged)
+        overlayScrollView.refreshControl = refreshControl
+        
+        NSLayoutConstraint.activate([
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.topAnchor.constraint(equalTo: barCollectionView.bottomAnchor, constant: 20)
+        ])
     }
     
     func setupChildViewController() -> [ProfileBottomViewController] {
@@ -376,6 +480,40 @@ class ProfileViewController: UIViewController {
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .overFullScreen
         present(nav, animated: true)
+    }
+    
+    @objc func followUserButtonTapped(_ sender: UIButton) {
+        if user.isFollowByCurrentUser == .notFollowYet {
+            UserService.followUser(uid: user.uid, completion: { [weak self] error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                
+                UIView.performWithoutAnimation {
+                    self?.user.isFollowByCurrentUser = .followed
+                    self?.changeProfileButton.setTitle("Đang theo dõi", for: .normal)
+                    self?.changeProfileButton.setTitleColor(.black, for: .normal)
+                    self?.changeProfileButton.backgroundColor = .systemGray6
+                    self?.changeProfileButton.layoutIfNeeded()
+                }
+            })
+        } else {
+            UserService.unfollowUser(uid: user.uid, completion: { [weak self] error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                UIView.performWithoutAnimation {
+                    self?.user.isFollowByCurrentUser = .notFollowYet
+                    self?.changeProfileButton.setTitle("Theo dõi", for: .normal)
+                    self?.changeProfileButton.setTitleColor(.white, for: .normal)
+                    self?.changeProfileButton.backgroundColor = UIColor(red: 41/255, green: 153/255, blue: 251/255, alpha: 1)
+                    self?.changeProfileButton.layoutIfNeeded()
+                }
+               
+            })
+        }
     }
     
     @objc func backButtonTapped(_ sender: UIButton) {
@@ -541,7 +679,10 @@ extension ProfileViewController: UpdateUserInfoDelegate {
             self.avatarImage.image = avatar
         }
         self.user = user
+        let tabbar = tabBarController as! TabBarController
+        tabbar.user = user
         updateUI()
+        storySavedCollectionView.reloadData()
     }
 }
 

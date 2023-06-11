@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseStorage
-
+import FirebaseAuth
 class UserService {
     static let db = Firestore.firestore()
     
@@ -80,6 +80,122 @@ class UserService {
                 return
             }
             completion(data, nil)
+        })
+    }
+    
+    static public func followUser(uid: String, completion: @escaping (Error?) -> Void) {
+        guard let currenUID = Auth.auth().currentUser?.uid else { return }
+        db.collection("followers").document(uid).setData([currenUID: 1], merge: true) { err in
+            completion(err)
+        }
+        db.collection("following").document(currenUID).setData([uid: 1], merge: true) { err in
+            completion(err)
+        }
+    }
+    
+    static public func unfollowUser(uid: String, completion: @escaping (Error?) -> Void) {
+        guard let currenUID = Auth.auth().currentUser?.uid else { return }
+        db.collection("followers").document(uid).updateData([currenUID: FieldValue.delete()]) { err in
+            completion(err)
+        }
+        db.collection("following").document(currenUID).updateData([uid: FieldValue.delete()]) { err in
+            completion(err)
+        }
+    }
+    
+    static public func checkFollowedByCurrenUser(uid: String, completion: @escaping (Bool, Error?) -> Void) {
+        guard let currentUID = Auth.auth().currentUser?.uid else { return }
+        db.collection("following").document(currentUID).getDocument(completion: { doc, error in
+            if let error = error {
+                completion(false, error)
+                return
+            }
+            if doc?.data()?[uid] is Int {
+                completion(true, nil)
+            } else {
+                completion(false, nil)
+            }
+            
+        })
+    }
+    
+    static public func getAllFolowers(uid: String, completion: @escaping ([User], Error?) -> Void) {
+        db.collection("followers").document(uid).getDocument(completion: { data, error in
+            if let error = error {
+                completion([],error)
+                return
+            }
+            guard let data = data?.data() else {
+                completion([], error)
+                return
+            }
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            var countUser = 0
+            var users: [User] = []
+            for (idUser, _) in data {
+                UserService.getUser(uid: idUser, completion: { dataUser, err in
+                    if let error = err {
+                        completion([], error)
+                        return
+                    }
+                    countUser += 1
+                    var user = User(uid: idUser, dictionary: dataUser)
+                    if user.uid != uid {
+                        UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
+                            user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
+                            users.append(user)
+                            if countUser == data.count {
+                                completion(users, nil)
+                            }
+                        })
+                    } else {
+                        users.append(user)
+                        if countUser == data.count {
+                            completion(users, nil)
+                        }
+                    }
+                })
+            }
+        })
+    }
+    
+    static public func getAllFolowing(uid: String, completion: @escaping ([User], Error?) -> Void) {
+        db.collection("following").document(uid).getDocument(completion: { data, error in
+            if let error = error {
+                completion([],error)
+                return
+            }
+            guard let data = data?.data() else {
+                completion([], error)
+                return
+            }
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            var countUser = 0
+            var users: [User] = []
+            for (idUser, _) in data {
+                UserService.getUser(uid: idUser, completion: { dataUser, err in
+                    if let error = err {
+                        completion([], error)
+                        return
+                    }
+                    countUser += 1
+                    var user = User(uid: idUser, dictionary: dataUser)
+                    if user.uid != uid {
+                        UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
+                            user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
+                            users.append(user)
+                            if countUser == data.count {
+                                completion(users, nil)
+                            }
+                        })
+                    } else {
+                        users.append(user)
+                        if countUser == data.count {
+                            completion(users, nil)
+                        }
+                    }
+                })
+            }
         })
     }
 }

@@ -110,9 +110,17 @@ class ProfileChangeViewController: UIViewController {
                 print("Can't update user info. Error: \(error)")
                 return
             }
-            strongSelf.delegate.updateUserInfo(user: strongSelf.user ?? User(uid: "", dictionary: [:]), avatar: strongSelf.avt)
-            strongSelf.dismiss(animated: true)
-            
+            UserService.getUser(uid: strongSelf.user.uid, completion: { dict, error in
+                if let error = error {
+                    strongSelf.rightButton.setTitle("Xong", for: .normal)
+                    strongSelf.rightButton.configuration?.showsActivityIndicator = false
+                    print("Can't get editted user. Error: \(error)")
+                    return
+                }
+                let userEditted = User(uid: strongSelf.user.uid, dictionary: dict)
+                strongSelf.delegate.updateUserInfo(user: userEditted, avatar: strongSelf.avt)
+                strongSelf.dismiss(animated: true)
+            })
         })
         
     }
@@ -161,6 +169,9 @@ extension ProfileChangeViewController: UITableViewDelegate, UITableViewDataSourc
             vc.dataUser = cell.detailLabel.text
             vc.indexInfo = indexPath.row
             vc.delegate = self
+            if indexPath.row == 3 {
+                vc.isBio = true
+            }
             navigationController?.pushViewController(vc, animated: true)
         }
     }

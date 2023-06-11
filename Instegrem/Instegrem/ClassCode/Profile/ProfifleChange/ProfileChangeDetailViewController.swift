@@ -17,6 +17,8 @@ class ProfileChangeDetailViewController: UIViewController {
     weak var delegate: ProfileEditDetailDelegate!
     var indexInfo: Int!
     var textViewHeightConstraint: NSLayoutConstraint!
+    var isBio: Bool = false
+    let maxCharacterCount = 24
     override func viewDidLoad() {
         super.viewDidLoad()
         configUI()
@@ -56,6 +58,7 @@ class ProfileChangeDetailViewController: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         editTextView = UITextView()
+        editTextView.returnKeyType = isBio ? .default : .done
         editTextView.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         editTextView.text = dataUser
         editTextView.sizeToFit()
@@ -120,6 +123,20 @@ extension ProfileChangeDetailViewController: UITextViewDelegate {
         } else {
             firstRightButton.isEnabled = false
         }
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        // allow line down with bio
+        if text == "\n" && !isBio  {
+            textView.resignFirstResponder()
+            return false
+        }
+        // limit text in other
+        let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
+        if newText.count > maxCharacterCount  && !isBio {
+            return false // Prevent the text change
+        }
+        return true
     }
 }
 
