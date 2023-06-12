@@ -8,7 +8,8 @@
 import UIKit
 
 class CommentViewController: UIViewController {
-    
+    let refreshControl: UIRefreshControl = UIRefreshControl()
+    var loadingView: UIActivityIndicatorView = UIActivityIndicatorView()
     var post: Post!
     var user: User!
     var indexPath: IndexPath!
@@ -29,6 +30,7 @@ class CommentViewController: UIViewController {
         getCurrentUser()
         configUI()
         getComments()
+        setUpLoadingView()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         // Do any additional setup after loading the view.
@@ -134,8 +136,29 @@ class CommentViewController: UIViewController {
         ])
     }
     
-    func getComments() {
+    func setUpLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.style = .medium
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        refreshControl.addTarget(self, action: #selector(getComments), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+        
+        NSLayoutConstraint.activate([
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    @objc func getComments() {
+        if comments.count == 0 {
+            view.bringSubviewToFront(loadingView)
+            loadingView.startAnimating()
+            loadingView.isHidden = false
+        }
         HomeService.getCommentPost(idPost: post.idPost, completion: { [weak self] comments, error in
+            self?.refreshControl.endRefreshing()
+            self?.loadingView.stopAnimating()
+            self?.loadingView.isHidden = true
             if let error = error {
                 print(error.localizedDescription)
                 return

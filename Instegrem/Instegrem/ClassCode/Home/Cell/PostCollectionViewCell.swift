@@ -268,7 +268,8 @@ class PostCollectionViewCell: UICollectionViewCell {
         myString.append(attrString)
         statusLabel.attributedText = myString
         
-        timeLabel.text = formatter.string(from: self.post.time)
+//        timeLabel.text = formatter.string(from: self.post.time)
+        timeLabel.text = self.post.time.timeAgoDisplay()
         
         userNameLabel.text = self.post.user.userName
         

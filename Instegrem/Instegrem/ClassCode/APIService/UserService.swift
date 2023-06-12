@@ -146,16 +146,19 @@ class UserService {
                             users.append(user)
                             if countUser == data.count {
                                 completion(users, nil)
+                                return
                             }
                         })
                     } else {
                         users.append(user)
                         if countUser == data.count {
                             completion(users, nil)
+                            return
                         }
                     }
                 })
             }
+            completion([], nil)
         })
     }
     

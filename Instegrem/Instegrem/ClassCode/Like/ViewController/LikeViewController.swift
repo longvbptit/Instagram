@@ -12,7 +12,8 @@ protocol FollowUserDelegate: NSObject {
 }
 
 class LikeViewController: UIViewController {
-
+    let refreshControl: UIRefreshControl = UIRefreshControl()
+    var loadingView: UIActivityIndicatorView = UIActivityIndicatorView()
     var tableView: UITableView!
     var navigationBar: CustomNavigationBar!
     var idPost: String!
@@ -22,6 +23,7 @@ class LikeViewController: UIViewController {
         view.backgroundColor = .white
         configUI()
         getUserLiked()
+        setUpLoadingView()
         // Do any additional setup after loading the view.
     }
     
@@ -76,8 +78,29 @@ class LikeViewController: UIViewController {
         ])
     }
     
-    func getUserLiked() {
+    func setUpLoadingView() {
+        view.addSubview(loadingView)
+        loadingView.style = .medium
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        refreshControl.addTarget(self, action: #selector(getUserLiked), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+        
+        NSLayoutConstraint.activate([
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+    
+    @objc func getUserLiked() {
+        if users.count == 0 {
+            view.bringSubviewToFront(loadingView)
+            loadingView.startAnimating()
+            loadingView.isHidden = false
+        }
         HomeService.getUsersLikedPost(idPost: idPost, completion: { [weak self] users, error in
+            self?.refreshControl.endRefreshing()
+            self?.loadingView.stopAnimating()
+            self?.loadingView.isHidden = true
             if let error = error {
                 print(error.localizedDescription)
                 return

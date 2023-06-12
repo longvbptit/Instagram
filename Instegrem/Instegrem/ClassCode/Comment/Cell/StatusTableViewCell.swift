@@ -36,7 +36,8 @@ class StatusTableViewCell: UITableViewCell {
         let nameAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .semibold) ]
         let timeAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular), NSAttributedString.Key.foregroundColor: UIColor.lightGray ]
         let myString = NSMutableAttributedString(string: user.userName, attributes: nameAttribute )
-        let attrString = NSAttributedString(string: " " + dateFormatter.string(from: time), attributes: timeAttribute)
+//        let attrString = NSAttributedString(string: " " + dateFormatter.string(from: time), attributes: timeAttribute)
+        let attrString = NSAttributedString(string: " " + time.timeAgoDisplay(), attributes: timeAttribute)
         myString.append(attrString)
         userNameLabel.attributedText = myString
     }

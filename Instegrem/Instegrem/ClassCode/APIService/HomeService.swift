@@ -71,6 +71,7 @@ class HomeService {
                                 if countData == querySnapshot.documents.count {
                                     posts = posts.sorted { $0.time > $1.time }
                                     completion(posts, nil)
+                                    return
                                 }
                             })
                             
@@ -90,6 +91,7 @@ class HomeService {
                                     if countData == querySnapshot.documents.count {
                                         posts = posts.sorted { $0.time > $1.time }
                                         completion(posts, nil)
+                                        return
                                     }
                                 })
                                 
@@ -99,6 +101,7 @@ class HomeService {
                     
                 })
             }
+            completion([], nil)
         })
     }
     
@@ -113,14 +116,7 @@ class HomeService {
             guard let querySnapshot = querySnapshot else { completion([], nil); return}
             if querySnapshot.isEmpty { completion([], nil); return}
             for document in querySnapshot.documents {
-                //                let post = Post(idPost:document.documentID, user: user, dictionary: document.data())
-                //                posts.append(post)
-                //                countData += 1
-                //                if countData == querySnapshot.documents.count {
-                //                    posts = posts.sorted { $0.time > $1.time }
-                //                    completion(posts, nil)
-                //                }
-                //
+                
                 HomeService.getNumberLikePost(idPost: document.documentID, completion: { numberOfLike, isLiked, err in
                     
                     HomeService.getNumberOfComment(idPost: document.documentID, completion: { numberOfComment, err in

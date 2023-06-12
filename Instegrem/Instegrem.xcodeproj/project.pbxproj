@@ -25,6 +25,8 @@
 		C740F7A82A32BA4800B58DB1 /* CommentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C740F7A72A32BA4800B58DB1 /* CommentViewController.swift */; };
 		C740F7AC2A32BD5600B58DB1 /* StatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C740F7AA2A32BD5600B58DB1 /* StatusTableViewCell.swift */; };
 		C740F7AD2A32BD5600B58DB1 /* StatusTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C740F7AB2A32BD5600B58DB1 /* StatusTableViewCell.xib */; };
+		C75478B52A37149600D4CDB3 /* FollowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75478B42A37149600D4CDB3 /* FollowViewController.swift */; };
+		C754A8B72A36160700690E73 /* NSDate-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C754A8B62A36160700690E73 /* NSDate-Extension.swift */; };
 		C7598F8C2A259F0E00C37AFB /* ProfileChangeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7598F8B2A259F0E00C37AFB /* ProfileChangeDetailViewController.swift */; };
 		C764B7482A21AF0B0013ED40 /* ProfileAddAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C764B7472A21AF0B0013ED40 /* ProfileAddAccountViewController.swift */; };
 		C78753A32A1BAAC800CC5CFA /* ProfileBottomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78753A12A1BAAC800CC5CFA /* ProfileBottomViewController.swift */; };
@@ -92,6 +94,8 @@
 		C740F7A72A32BA4800B58DB1 /* CommentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewController.swift; sourceTree = "<group>"; };
 		C740F7AA2A32BD5600B58DB1 /* StatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusTableViewCell.swift; sourceTree = "<group>"; };
 		C740F7AB2A32BD5600B58DB1 /* StatusTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StatusTableViewCell.xib; sourceTree = "<group>"; };
+		C75478B42A37149600D4CDB3 /* FollowViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowViewController.swift; sourceTree = "<group>"; };
+		C754A8B62A36160700690E73 /* NSDate-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDate-Extension.swift"; sourceTree = "<group>"; };
 		C7598F8B2A259F0E00C37AFB /* ProfileChangeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileChangeDetailViewController.swift; sourceTree = "<group>"; };
 		C764B7472A21AF0B0013ED40 /* ProfileAddAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAddAccountViewController.swift; sourceTree = "<group>"; };
 		C78753A12A1BAAC800CC5CFA /* ProfileBottomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBottomViewController.swift; sourceTree = "<group>"; };
@@ -236,6 +240,7 @@
 			isa = PBXGroup;
 			children = (
 				C7598F892A259DFB00C37AFB /* APIService */,
+				C75478B02A37121800D4CDB3 /* Follow */,
 				C79215D72A31EB46009E9404 /* Like */,
 				C718703B2A323ED000EB98FD /* Comment */,
 				C7B9E5AF2A239F0300D2E94D /* Login */,
@@ -253,6 +258,7 @@
 				C78CDE662A177A1C004835F7 /* UIView-Extension.swift */,
 				C7D155BC2A26EC51007073AA /* UILabel-Extension.swift */,
 				C78B03C62A30336400B9B57D /* UIViewController-Extension.swift */,
+				C754A8B62A36160700690E73 /* NSDate-Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -330,6 +336,38 @@
 				C7AB44E42A32C50D00D66A5B /* HeaderCommentView.swift */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		C75478B02A37121800D4CDB3 /* Follow */ = {
+			isa = PBXGroup;
+			children = (
+				C75478B32A37148000D4CDB3 /* Controller */,
+				C75478B22A37147600D4CDB3 /* ViewModel */,
+				C75478B12A37146D00D4CDB3 /* Model */,
+			);
+			path = Follow;
+			sourceTree = "<group>";
+		};
+		C75478B12A37146D00D4CDB3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C75478B22A37147600D4CDB3 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		C75478B32A37148000D4CDB3 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				C75478B42A37149600D4CDB3 /* FollowViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		C7598F892A259DFB00C37AFB /* APIService */ = {
@@ -651,7 +689,9 @@
 				C7B9E5B22A23A02700D2E94D /* LoginViewController.swift in Sources */,
 				C79215DC2A31EC1D009E9404 /* LikeTableViewCell.swift in Sources */,
 				C7E2E32C2A1F9A6B00DF0754 /* CustomPresentViewController.swift in Sources */,
+				C75478B52A37149600D4CDB3 /* FollowViewController.swift in Sources */,
 				C71A4F9F2A171B8F003F4B9D /* AppDelegate.swift in Sources */,
+				C754A8B72A36160700690E73 /* NSDate-Extension.swift in Sources */,
 				C711127F2A2A3AE200CFFD6B /* PostStatusViewController.swift in Sources */,
 				C78B03C72A30336400B9B57D /* UIViewController-Extension.swift in Sources */,
 				C71BBCDC2A2ADE0000FB7FB9 /* Post.swift in Sources */,

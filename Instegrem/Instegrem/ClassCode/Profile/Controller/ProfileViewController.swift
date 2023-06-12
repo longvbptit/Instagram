@@ -30,9 +30,9 @@ class ProfileViewController: UIViewController {
     
     @IBOutlet weak var fullNameLabel: UILabel!
     
-    @IBOutlet weak var numberOfPostLabel: UILabel!
-    @IBOutlet weak var numberOfFollowerLabel: UILabel!
-    @IBOutlet weak var numberOfFollowingLabel: UILabel!
+    @IBOutlet weak var numberOfPostButton: UIButton!
+    @IBOutlet weak var numberOfFollowerButton: UIButton!
+    @IBOutlet weak var numberOfFollowingButton: UIButton!
     
     var overlayScrollView: UIScrollView!
     var currentIndex: Int = 0
@@ -46,7 +46,9 @@ class ProfileViewController: UIViewController {
             }
         }
     }
-
+    
+    var bottomContentView: UIView!
+    
     let currentUID = Auth.auth().currentUser?.uid ?? ""
     
     let refreshControl: UIRefreshControl = UIRefreshControl()
@@ -61,27 +63,27 @@ class ProfileViewController: UIViewController {
     var firstLeftButton: UIButton!
     
     var centerButton: UIButton!
-        
+    
     var user: User!
     
     var isOrigin: Bool = true
     
     var posts: [Post] = [] {
         didSet {
-            numberOfPostLabel.text = "\(posts.count)"
+            setUpPostButton()
         }
     }
     var followers: [User] = [] {
         didSet {
-            numberOfFollowerLabel.text = "\(followers.count)"
+            setUpFollowerButton()
         }
     }
     var following: [User] = [] {
         didSet {
-            numberOfFollowingLabel.text = "\(following.count)"
+            setUpFollowingButton()
         }
     }
-
+    
     var story: [Story] = [Story(image: "ic-story0", title: "Tin của bạn"),
                           Story(image: "ic-story1", title: "Tin 1"),
                           Story(image: "ic-story2", title: "Tin 2"),
@@ -100,6 +102,7 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addChildVC()
+        addChildView()
         settingUI()
         setUpBarColletion()
         layoutOverlayScrollView()
@@ -116,6 +119,9 @@ class ProfileViewController: UIViewController {
             changeProfileButton.addTarget(self, action: #selector(followUserButtonTapped(_:)), for: .touchUpInside)
         }
         setUpLoadingView()
+        getPosts()
+        getFollowers()
+        getFollowing()
         
     }
     
@@ -220,12 +226,24 @@ class ProfileViewController: UIViewController {
     }
     
     func settingUI() {
+        setUpPostButton()
+        setUpFollowerButton()
+        setUpFollowingButton()
         
+        numberOfPostButton.titleLabel?.textAlignment = .center
+        numberOfPostButton.titleLabel?.numberOfLines = 2
+
+        numberOfFollowerButton.titleLabel?.textAlignment = .center
+        numberOfFollowerButton.titleLabel?.numberOfLines = 2
+
+        numberOfFollowingButton.titleLabel?.textAlignment = .center
+        numberOfFollowingButton.titleLabel?.numberOfLines = 2
+
         indicator = IGActivityIndicator(frame: avatarImage.frame, addWidthAndHeight: 4)
-//        topView.layer.addSublayer(indicator)
+        //        topView.layer.addSublayer(indicator)
         avatarImage.clipsToBounds = true
         avatarImage.layer.cornerRadius = 40
-        indicator.addAnimation()
+//        indicator.addAnimation()
         if isOrigin {
             setupNavBar()
         } else {
@@ -338,23 +356,93 @@ class ProfileViewController: UIViewController {
         containerScrollView.alwaysBounceVertical = true
     }
     
+    func setUpPostButton() {
+        let nameAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .semibold) ]
+        let timeAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular)]
+        let myString = NSMutableAttributedString(string: "\(posts.count)", attributes: nameAttribute )
+        let attrString = NSAttributedString(string: posts.count > 1 ? "\nPosts" : "\nPost", attributes: timeAttribute)
+        myString.append(attrString)
+        UIView.performWithoutAnimation {
+            numberOfPostButton.setAttributedTitle(myString, for: .normal)
+            numberOfPostButton.layoutIfNeeded()
+        }
+    }
+    
+    func setUpFollowerButton() {
+        let nameAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .semibold) ]
+        let timeAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular)]
+        let myString = NSMutableAttributedString(string: "\(followers.count)", attributes: nameAttribute )
+        let attrString = NSAttributedString(string: followers.count > 1 ? "\nFollowers" : "\nFollower", attributes: timeAttribute)
+        myString.append(attrString)
+        UIView.performWithoutAnimation {
+            numberOfFollowerButton.setAttributedTitle(myString, for: .normal)
+            numberOfFollowerButton.layoutIfNeeded()
+        }
+    }
+    
+    func setUpFollowingButton() {
+        let nameAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .semibold) ]
+        let timeAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .regular)]
+        let myString = NSMutableAttributedString(string: "\(following.count)", attributes: nameAttribute )
+        let attrString = NSAttributedString(string: "\nFollowing", attributes: timeAttribute)
+        myString.append(attrString)
+        UIView.performWithoutAnimation {
+            numberOfFollowingButton.setAttributedTitle(myString, for: .normal)
+            numberOfFollowingButton.layoutIfNeeded()
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
         horizontalContainerView.contentSize = CGSize(width: view.frame.width * 3, height: horizontalContainerView.contentSize.height)
-
     }
     
     override func viewWillLayoutSubviews() {
-        for (index, childVC) in childBottomVC.enumerated() {
-            childVC.view.frame = CGRect(x: CGFloat(index) * view.bounds.width, y: 0, width: view.bounds.width, height:  horizontalContainerView.bounds.height)
-            horizontalContainerView.addSubview(childVC.view)
-            childVC.didMove(toParent: self)
+//        for (index, childVC) in childBottomVC.enumerated() {
+//            childVC.view.frame = CGRect(x: CGFloat(index) * view.bounds.width, y: 0, width: view.bounds.width, height:  horizontalContainerView.bounds.height)
+//            horizontalContainerView.addSubview(childVC.view)
+//            childVC.didMove(toParent: self)
+//        }
+        bottomContentView.widthAnchor.constraint(equalToConstant: view.frame.width * CGFloat(childBottomVC.count)).isActive = true
+        bottomContentView.heightAnchor.constraint(equalToConstant: horizontalContainerView.frame.height).isActive = true
+
+        for childVC in childBottomVC {
+            childVC.view.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
         }
-        getPosts()
-        getFollowers()
-        getFollowing()
+//        getPosts()
         bottomBarViewWidthConstraint.constant = (view.frame.width - 3) / CGFloat(childBottomVC.count)
+        updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
+
         
+        
+    }
+    
+    func addChildView() {
+        bottomContentView = UIView()
+        bottomContentView.translatesAutoresizingMaskIntoConstraints = false
+        horizontalContainerView.addSubview(bottomContentView)
+        NSLayoutConstraint.activate([
+            bottomContentView.topAnchor.constraint(equalTo: horizontalContainerView.topAnchor),
+            bottomContentView.bottomAnchor.constraint(equalTo: horizontalContainerView.bottomAnchor),
+            bottomContentView.leftAnchor.constraint(equalTo: horizontalContainerView.leftAnchor),
+            bottomContentView.rightAnchor.constraint(equalTo: horizontalContainerView.rightAnchor),
+//            bottomContentView.widthAnchor.constraint(equalToConstant: view.frame.width * CGFloat(childBottomVC.count)),
+        ])
+        for (index, childVC) in childBottomVC.enumerated() {
+            bottomContentView.addSubview(childVC.view)
+            childVC.view.translatesAutoresizingMaskIntoConstraints = false
+            childVC.didMove(toParent: self)
+            NSLayoutConstraint.activate([
+                childVC.view.topAnchor.constraint(equalTo: bottomContentView.topAnchor),
+                childVC.view.bottomAnchor.constraint(equalTo: bottomContentView.bottomAnchor)
+//                childVC.view.widthAnchor.constraint(equalToConstant: view.frame.width)
+            ])
+            if index == 0 {
+                childVC.view.leftAnchor.constraint(equalTo: bottomContentView.leftAnchor).isActive = true
+            } else {
+                childVC.view.leftAnchor.constraint(equalTo: childBottomVC[index-1].view.rightAnchor).isActive = true
+            }
+        }
     }
     
     func configBioLabel() {
@@ -405,7 +493,7 @@ class ProfileViewController: UIViewController {
         vc1.pageImage = "ic-reel"
         vc1.count = 20
         vc1.color = .red
-
+        
         let vc2 = ProfileBottomViewController()
         vc2.pageIndex = 2
         vc2.pageTitle = "Tag"
@@ -454,7 +542,7 @@ class ProfileViewController: UIViewController {
                 self.tabBarController?.view.transform = CGAffineTransform.identity
             })
         }
-
+        
         self.present(vc, animated: false) {
             UIView.animate(withDuration: 0.3, animations: {
                 self.tabBarController?.view.transform = transform
@@ -489,7 +577,7 @@ class ProfileViewController: UIViewController {
                     print(error.localizedDescription)
                     return
                 }
-                
+                self?.getFollowers()
                 UIView.performWithoutAnimation {
                     self?.user.isFollowByCurrentUser = .followed
                     self?.changeProfileButton.setTitle("Đang theo dõi", for: .normal)
@@ -498,12 +586,13 @@ class ProfileViewController: UIViewController {
                     self?.changeProfileButton.layoutIfNeeded()
                 }
             })
-        } else {
+        } else if user.isFollowByCurrentUser == .followed {
             UserService.unfollowUser(uid: user.uid, completion: { [weak self] error in
                 if let error = error {
                     print(error.localizedDescription)
                     return
                 }
+                self?.getFollowers()
                 UIView.performWithoutAnimation {
                     self?.user.isFollowByCurrentUser = .notFollowYet
                     self?.changeProfileButton.setTitle("Theo dõi", for: .normal)
@@ -511,7 +600,7 @@ class ProfileViewController: UIViewController {
                     self?.changeProfileButton.backgroundColor = UIColor(red: 41/255, green: 153/255, blue: 251/255, alpha: 1)
                     self?.changeProfileButton.layoutIfNeeded()
                 }
-               
+                
             })
         }
     }
@@ -570,7 +659,7 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == storySavedCollectionView {
-            print("ahihi")
+            print("\(followers.count)")
         } else {
             
             if isHorizontalBottomScroll {
@@ -605,7 +694,6 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
                         cell.image.alpha = 1
                     })
                 }
-                
             }
         }
         
