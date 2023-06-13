@@ -101,6 +101,7 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("DEBUG: profile viewDidLoad")
         addChildVC()
         addChildView()
         settingUI()
@@ -393,11 +394,14 @@ class ProfileViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        print("DEBUG: profile viewWillApear")
         navigationController?.isNavigationBarHidden = true
         horizontalContainerView.contentSize = CGSize(width: view.frame.width * 3, height: horizontalContainerView.contentSize.height)
     }
     
     override func viewWillLayoutSubviews() {
+        print("DEBUG: profile viewWillLayoutSubviews")
+
 //        for (index, childVC) in childBottomVC.enumerated() {
 //            childVC.view.frame = CGRect(x: CGFloat(index) * view.bounds.width, y: 0, width: view.bounds.width, height:  horizontalContainerView.bounds.height)
 //            horizontalContainerView.addSubview(childVC.view)
@@ -412,9 +416,26 @@ class ProfileViewController: UIViewController {
 //        getPosts()
         bottomBarViewWidthConstraint.constant = (view.frame.width - 3) / CGFloat(childBottomVC.count)
         updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
-
-        
-        
+    }
+//    override func loadView() {
+//        super.loadView()
+//        print("DEBUG: profile loadView")
+//    }
+//
+    override func viewDidLayoutSubviews() {
+        print("DEBUG: profile viewDidLayoutSubviews")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("DEBUG: profile viewDidAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        print("DEBUG: profile viewWillDisappear")
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        print("DEBUG: profile viewDidDisappear")
     }
     
     func addChildView() {

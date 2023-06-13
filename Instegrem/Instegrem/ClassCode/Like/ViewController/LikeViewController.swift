@@ -18,9 +18,13 @@ class LikeViewController: UIViewController {
     var navigationBar: CustomNavigationBar!
     var idPost: String!
     var users: [User] = []
+    var filteredUsers: [User] = []
+    var searchBar: UISearchBar!
+    var isSearching: Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        setupSearchBar()
         configUI()
         getUserLiked()
         setUpLoadingView()
@@ -60,6 +64,9 @@ class LikeViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.keyboardDismissMode = .onDrag
+                tableView.separatorStyle = .none
+        tableView.tableHeaderView = searchBar
         tableView.register(UINib(nibName: "LikeTableViewCell", bundle: nil), forCellReuseIdentifier: "LikeTableViewCell")
         
         addSeparatorNav()
@@ -81,8 +88,9 @@ class LikeViewController: UIViewController {
     func setUpLoadingView() {
         view.addSubview(loadingView)
         loadingView.style = .medium
+        loadingView.hidesWhenStopped = true
         loadingView.translatesAutoresizingMaskIntoConstraints = false
-        refreshControl.addTarget(self, action: #selector(getUserLiked), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(reloadData), for: .valueChanged)
         tableView.refreshControl = refreshControl
         
         NSLayoutConstraint.activate([
@@ -91,16 +99,30 @@ class LikeViewController: UIViewController {
         ])
     }
     
-    @objc func getUserLiked() {
+    func setupSearchBar() {
+        searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
+        searchBar.searchBarStyle = .minimal
+        searchBar.placeholder = "Search"
+        searchBar.showsCancelButton = false
+        searchBar.delegate = self
+    }
+    
+    @objc func reloadData() {
+        filteredUsers.removeAll()
+        isSearching = false
+        searchBar.text = ""
+        getUserLiked()
+    }
+    
+    func getUserLiked() {
+
         if users.count == 0 {
             view.bringSubviewToFront(loadingView)
             loadingView.startAnimating()
-            loadingView.isHidden = false
         }
         HomeService.getUsersLikedPost(idPost: idPost, completion: { [weak self] users, error in
             self?.refreshControl.endRefreshing()
             self?.loadingView.stopAnimating()
-            self?.loadingView.isHidden = true
             if let error = error {
                 print(error.localizedDescription)
                 return
@@ -113,7 +135,7 @@ class LikeViewController: UIViewController {
     @objc func backButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
     }
-
+    
 }
 
 extension LikeViewController: UITableViewDelegate, UITableViewDataSource {
@@ -121,7 +143,7 @@ extension LikeViewController: UITableViewDelegate, UITableViewDataSource {
         1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count
+        return isSearching ? filteredUsers.count : users.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -130,7 +152,7 @@ extension LikeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "LikeTableViewCell", for: indexPath) as! LikeTableViewCell
-        cell.user = users[indexPath.row]
+        cell.user = isSearching ? filteredUsers[indexPath.row] : users[indexPath.row]
         cell.delegate = self
         cell.indexPath = indexPath
         cell.updateFollowButton()
@@ -143,7 +165,7 @@ extension LikeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = ProfileViewController()
         vc.isOrigin = false
-        vc.user = users[indexPath.row]
+        vc.user = isSearching ? filteredUsers[indexPath.row] : users[indexPath.row]
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -170,5 +192,20 @@ extension LikeViewController: FollowUserDelegate {
                 self?.tableView.reloadRows(at: [indexPath], with: .none)
             })
         }
+    }
+}
+
+extension LikeViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            isSearching = false
+            getUserLiked()
+            return
+        }
+        isSearching = true
+        filteredUsers = users.filter { likedUser in
+            likedUser.userName.lowercased().contains(searchText.lowercased())
+        }
+        tableView.reloadData()
     }
 }

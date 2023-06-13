@@ -60,7 +60,7 @@
                                                 <constraint firstAttribute="height" constant="80" id="cvn-Ct-1wk"/>
                                             </constraints>
                                         </imageView>
-                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="9IT-ii-xTj">
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="9IT-ii-xTj">
                                             <rect key="frame" x="144" y="21" width="258" height="48"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jw3-Pc-S9c">
@@ -72,7 +72,7 @@
                                                     </state>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1nT-uc-Dra">
-                                                    <rect key="frame" x="85.5" y="0.0" width="58" height="48"/>
+                                                    <rect key="frame" x="93" y="0.0" width="58" height="48"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" title="0 Followers">

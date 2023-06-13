@@ -23,6 +23,8 @@ class DetailPostViewController: UIViewController {
     var indexPath: IndexPath!
     var user: User!
     override func viewDidLoad() {
+        print("DEBUG: other viewDidLoad")
+
         super.viewDidLoad()
         view.backgroundColor = .white
         configUI()
@@ -86,12 +88,32 @@ class DetailPostViewController: UIViewController {
         ])
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        print("DEBUG: other viewWillAppear")
+    }
+    override func viewWillLayoutSubviews() {
+        print("DEBUG: other viewWillLayoutSubviews")
+
+    }
     override func viewDidLayoutSubviews() {
+        print("DEBUG: other viewDidLayoutSubviews")
         if indexPath != nil {
             collectionView.scrollToItem(at: indexPath, at: .top, animated: false)
             collectionView.layoutSubviews()
             indexPath = nil
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("DEBUG: other viewDidAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        print("DEBUG: other viewWillDisappear")
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        print("DEBUG: other viewDidDisappear")
     }
     
     func getPosts() {
