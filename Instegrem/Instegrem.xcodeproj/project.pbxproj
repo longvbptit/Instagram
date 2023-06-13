@@ -57,6 +57,7 @@
 		C7B5680A2A20BD8100F47C14 /* ProfileChangeTopTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7B568082A20BD8100F47C14 /* ProfileChangeTopTableViewCell.xib */; };
 		C7B5680D2A20BF9D00F47C14 /* ProfileChangeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B5680B2A20BF9D00F47C14 /* ProfileChangeTableViewCell.swift */; };
 		C7B5680E2A20BF9D00F47C14 /* ProfileChangeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7B5680C2A20BF9D00F47C14 /* ProfileChangeTableViewCell.xib */; };
+		C7B6D47F2A381F3B00D14F98 /* FollowBottomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B6D47E2A381F3B00D14F98 /* FollowBottomViewController.swift */; };
 		C7B9E5AB2A23604B00D2E94D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7B9E5AA2A23604A00D2E94D /* GoogleService-Info.plist */; };
 		C7B9E5AE2A239E8700D2E94D /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B9E5AD2A239E8700D2E94D /* ProfileModel.swift */; };
 		C7B9E5B22A23A02700D2E94D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B9E5B02A23A02700D2E94D /* LoginViewController.swift */; };
@@ -126,6 +127,7 @@
 		C7B568082A20BD8100F47C14 /* ProfileChangeTopTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileChangeTopTableViewCell.xib; sourceTree = "<group>"; };
 		C7B5680B2A20BF9D00F47C14 /* ProfileChangeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileChangeTableViewCell.swift; sourceTree = "<group>"; };
 		C7B5680C2A20BF9D00F47C14 /* ProfileChangeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileChangeTableViewCell.xib; sourceTree = "<group>"; };
+		C7B6D47E2A381F3B00D14F98 /* FollowBottomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowBottomViewController.swift; sourceTree = "<group>"; };
 		C7B9E5AA2A23604A00D2E94D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C7B9E5AD2A239E8700D2E94D /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		C7B9E5B02A23A02700D2E94D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -366,6 +368,7 @@
 			isa = PBXGroup;
 			children = (
 				C75478B42A37149600D4CDB3 /* FollowViewController.swift */,
+				C7B6D47E2A381F3B00D14F98 /* FollowBottomViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -702,6 +705,7 @@
 				C764B7482A21AF0B0013ED40 /* ProfileAddAccountViewController.swift in Sources */,
 				C711127C2A2A32F900CFFD6B /* PostViewController.swift in Sources */,
 				C7B9E5AE2A239E8700D2E94D /* ProfileModel.swift in Sources */,
+				C7B6D47F2A381F3B00D14F98 /* FollowBottomViewController.swift in Sources */,
 				C78CDE642A176FEB004835F7 /* ProfileViewController.swift in Sources */,
 				C7E2E32E2A1FA81400DF0754 /* ProfileCreateViewController.swift in Sources */,
 				C7357D1F2A25F09C00070A20 /* AuthService.swift in Sources */,

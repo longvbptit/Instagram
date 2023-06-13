@@ -221,7 +221,7 @@ class ProfileViewController: UIViewController {
         if barCollectionView.numberOfItems(inSection: 0) > 0 {
             let indexPath = IndexPath(item: 0, section: 0)
             barCollectionView.delegate?.collectionView?(barCollectionView, didSelectItemAt: indexPath)
-            //                previosSelectedIndexPath = indexPath
+//            previosSelectedIndexPath = indexPath
         }
         view.layoutIfNeeded()
     }
@@ -236,9 +236,11 @@ class ProfileViewController: UIViewController {
 
         numberOfFollowerButton.titleLabel?.textAlignment = .center
         numberOfFollowerButton.titleLabel?.numberOfLines = 2
+        numberOfFollowerButton.addTarget(self, action: #selector(gotoFollowers(_:)), for: .touchUpInside)
 
         numberOfFollowingButton.titleLabel?.textAlignment = .center
         numberOfFollowingButton.titleLabel?.numberOfLines = 2
+        numberOfFollowingButton.addTarget(self, action: #selector(gotoFolloweing(_:)), for: .touchUpInside)
 
         indicator = IGActivityIndicator(frame: avatarImage.frame, addWidthAndHeight: 4)
         //        topView.layer.addSublayer(indicator)
@@ -396,7 +398,7 @@ class ProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         print("DEBUG: profile viewWillApear")
         navigationController?.isNavigationBarHidden = true
-        horizontalContainerView.contentSize = CGSize(width: view.frame.width * 3, height: horizontalContainerView.contentSize.height)
+//        horizontalContainerView.contentSize = CGSize(width: view.frame.width * 3, height: horizontalContainerView.contentSize.height)
     }
     
     override func viewWillLayoutSubviews() {
@@ -416,26 +418,6 @@ class ProfileViewController: UIViewController {
 //        getPosts()
         bottomBarViewWidthConstraint.constant = (view.frame.width - 3) / CGFloat(childBottomVC.count)
         updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
-    }
-//    override func loadView() {
-//        super.loadView()
-//        print("DEBUG: profile loadView")
-//    }
-//
-    override func viewDidLayoutSubviews() {
-        print("DEBUG: profile viewDidLayoutSubviews")
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        print("DEBUG: profile viewDidAppear")
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        print("DEBUG: profile viewWillDisappear")
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        print("DEBUG: profile viewDidDisappear")
     }
     
     func addChildView() {
@@ -626,6 +608,24 @@ class ProfileViewController: UIViewController {
         }
     }
     
+    @objc func gotoFollowers(_ sender: UIButton) {
+        let vc = FollowViewController()
+        vc.user = user
+        vc.follower = followers
+        vc.following = following
+        vc.selectedIndex = 0
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func gotoFolloweing(_ sender: UIButton) {
+        let vc = FollowViewController()
+        vc.user = user
+        vc.follower = followers
+        vc.following = following
+        vc.selectedIndex = 1
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
     @objc func backButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
     }
@@ -649,8 +649,6 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
             return CGSize(width: (collectionView.frame.width) / 3, height: collectionView.frame.height)
         }
     }
-    
-    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == storySavedCollectionView {

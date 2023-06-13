@@ -28,23 +28,18 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </imageView>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="fqw-AK-noh">
-                        <rect key="frame" x="149" y="51.666666666666657" width="233" height="34"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="bao_long" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oPc-jG-IaF">
-                                <rect key="frame" x="0.0" y="0.0" width="233" height="17"/>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Vũ Bảo Long Longg Lon" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dda-wr-Hf1">
-                                <rect key="frame" x="0.0" y="17.000000000000007" width="233" height="17"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                    </stackView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="bao_longgg" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oPc-jG-IaF">
+                        <rect key="frame" x="149" y="51" width="80" height="17"/>
+                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Vũ Bảo Long Longg Lon" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dda-wr-Hf1">
+                        <rect key="frame" x="149" y="69" width="233" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HLZ-6e-XHg">
                         <rect key="frame" x="394" y="53.666666666666657" width="110" height="30"/>
                         <color key="backgroundColor" red="0.15931823849999999" green="0.60025709869999999" blue="0.98482686279999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -67,22 +62,38 @@
                             <action selector="followButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Dmm-Uj-Cqd"/>
                         </connections>
                     </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="36B-Eh-83Q">
+                        <rect key="frame" x="241" y="45.666666666666664" width="153" height="27.999999999999993"/>
+                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="13"/>
+                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                        <state key="normal" title="Theo dõi"/>
+                        <connections>
+                            <action selector="followUserNameButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Ddp-pV-9Ue"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="5Sw-gX-AhF" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="6" id="2eN-wg-9IX"/>
-                    <constraint firstItem="fqw-AK-noh" firstAttribute="centerY" secondItem="5Sw-gX-AhF" secondAttribute="centerY" id="4mc-Ol-2Je"/>
+                    <constraint firstItem="oPc-jG-IaF" firstAttribute="leading" secondItem="5Sw-gX-AhF" secondAttribute="trailing" constant="12" id="8Ml-lD-rt3"/>
                     <constraint firstItem="HLZ-6e-XHg" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="B9q-hK-bzZ"/>
+                    <constraint firstItem="HLZ-6e-XHg" firstAttribute="leading" secondItem="dda-wr-Hf1" secondAttribute="trailing" constant="12" id="GMm-Ah-PMZ"/>
+                    <constraint firstItem="dda-wr-Hf1" firstAttribute="centerY" secondItem="5Sw-gX-AhF" secondAttribute="centerY" constant="9" id="H3j-CL-6eh"/>
+                    <constraint firstItem="oPc-jG-IaF" firstAttribute="centerY" secondItem="5Sw-gX-AhF" secondAttribute="centerY" constant="-9" id="JpC-2d-8Ah"/>
+                    <constraint firstItem="36B-Eh-83Q" firstAttribute="leading" secondItem="oPc-jG-IaF" secondAttribute="trailing" constant="12" id="OYz-bB-KIa"/>
                     <constraint firstItem="5Sw-gX-AhF" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="W9O-RV-PnV"/>
+                    <constraint firstItem="HLZ-6e-XHg" firstAttribute="leading" secondItem="36B-Eh-83Q" secondAttribute="trailing" id="YEX-Su-r9i"/>
+                    <constraint firstItem="dda-wr-Hf1" firstAttribute="leading" secondItem="5Sw-gX-AhF" secondAttribute="trailing" constant="12" id="bEu-Jh-h7J"/>
                     <constraint firstItem="5Sw-gX-AhF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="bWs-jg-Wxb"/>
-                    <constraint firstItem="fqw-AK-noh" firstAttribute="leading" secondItem="5Sw-gX-AhF" secondAttribute="trailing" constant="12" id="diT-rd-owK"/>
-                    <constraint firstItem="HLZ-6e-XHg" firstAttribute="leading" secondItem="fqw-AK-noh" secondAttribute="trailing" constant="12" id="kND-nc-mko"/>
                     <constraint firstAttribute="trailing" secondItem="HLZ-6e-XHg" secondAttribute="trailing" constant="12" id="mzx-0e-QEo"/>
+                    <constraint firstItem="36B-Eh-83Q" firstAttribute="centerY" secondItem="oPc-jG-IaF" secondAttribute="centerY" id="qQq-FX-c9r"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="avatarImage" destination="5Sw-gX-AhF" id="WmR-MT-l9O"/>
                 <outlet property="followButton" destination="HLZ-6e-XHg" id="QEr-6d-qFF"/>
+                <outlet property="followButtonWidthConstraint" destination="kLO-XH-kl0" id="bn7-wF-HLt"/>
+                <outlet property="followUserNameButton" destination="36B-Eh-83Q" id="IcN-z5-W47"/>
                 <outlet property="nameLabel" destination="dda-wr-Hf1" id="iIX-jc-x7a"/>
                 <outlet property="userNameLabel" destination="oPc-jG-IaF" id="aOr-RC-TCn"/>
             </connections>

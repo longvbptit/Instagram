@@ -86,19 +86,39 @@ class UserService {
     static public func followUser(uid: String, completion: @escaping (Error?) -> Void) {
         guard let currenUID = Auth.auth().currentUser?.uid else { return }
         db.collection("followers").document(uid).setData([currenUID: 1], merge: true) { err in
-            completion(err)
+            if let error = err {
+                completion(error)
+            }
         }
         db.collection("following").document(currenUID).setData([uid: 1], merge: true) { err in
-            completion(err)
+            if let error = err {
+                completion(error)
+            }
         }
+        completion(nil)
     }
     
     static public func unfollowUser(uid: String, completion: @escaping (Error?) -> Void) {
         guard let currenUID = Auth.auth().currentUser?.uid else { return }
         db.collection("followers").document(uid).updateData([currenUID: FieldValue.delete()]) { err in
-            completion(err)
+            if let error = err {
+                completion(error)
+            }
         }
         db.collection("following").document(currenUID).updateData([uid: FieldValue.delete()]) { err in
+            if let error = err {
+                completion(error)
+            }
+        }
+        completion(nil)
+    }
+    
+    static public func removeFollower(uid: String, completion: @escaping (Error?) -> Void) {
+        guard let currenUID = Auth.auth().currentUser?.uid else { return }
+        db.collection("following").document(uid).updateData([currenUID: FieldValue.delete()]) { err in
+            completion(err)
+        }
+        db.collection("followers").document(currenUID).updateData([uid: FieldValue.delete()]) { err in
             completion(err)
         }
     }
@@ -130,35 +150,31 @@ class UserService {
                 return
             }
             guard let uid = Auth.auth().currentUser?.uid else { return }
-            var countUser = 0
             var users: [User] = []
+            if data.isEmpty { completion([], nil); return }
             for (idUser, _) in data {
                 UserService.getUser(uid: idUser, completion: { dataUser, err in
                     if let error = err {
                         completion([], error)
                         return
                     }
-                    countUser += 1
                     var user = User(uid: idUser, dictionary: dataUser)
                     if user.uid != uid {
                         UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
                             user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
                             users.append(user)
-                            if countUser == data.count {
+                            if users.count == data.count {
                                 completion(users, nil)
-                                return
                             }
                         })
                     } else {
                         users.append(user)
-                        if countUser == data.count {
+                        if users.count == data.count {
                             completion(users, nil)
-                            return
                         }
                     }
                 })
             }
-            completion([], nil)
         })
     }
     
@@ -173,27 +189,26 @@ class UserService {
                 return
             }
             guard let uid = Auth.auth().currentUser?.uid else { return }
-            var countUser = 0
             var users: [User] = []
+            if data.isEmpty { completion([], nil); return }
             for (idUser, _) in data {
                 UserService.getUser(uid: idUser, completion: { dataUser, err in
                     if let error = err {
                         completion([], error)
                         return
                     }
-                    countUser += 1
                     var user = User(uid: idUser, dictionary: dataUser)
                     if user.uid != uid {
                         UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
                             user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
                             users.append(user)
-                            if countUser == data.count {
+                            if users.count == data.count {
                                 completion(users, nil)
                             }
                         })
                     } else {
                         users.append(user)
-                        if countUser == data.count {
+                        if users.count == data.count {
                             completion(users, nil)
                         }
                     }
