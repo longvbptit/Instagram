@@ -29,6 +29,11 @@
 		C754A8B72A36160700690E73 /* NSDate-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C754A8B62A36160700690E73 /* NSDate-Extension.swift */; };
 		C7598F8C2A259F0E00C37AFB /* ProfileChangeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7598F8B2A259F0E00C37AFB /* ProfileChangeDetailViewController.swift */; };
 		C764B7482A21AF0B0013ED40 /* ProfileAddAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C764B7472A21AF0B0013ED40 /* ProfileAddAccountViewController.swift */; };
+		C77452622A3963530075AD96 /* ExploreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77452612A3963530075AD96 /* ExploreViewController.swift */; };
+		C77452662A3980F60075AD96 /* UserCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77452642A3980F60075AD96 /* UserCollectionViewCell.swift */; };
+		C77452672A3980F60075AD96 /* UserCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C77452652A3980F60075AD96 /* UserCollectionViewCell.xib */; };
+		C774526B2A39ACC90075AD96 /* ReelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C774526A2A39ACC90075AD96 /* ReelsViewController.swift */; };
+		C774526D2A39C9710075AD96 /* UINavigationController-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C774526C2A39C9710075AD96 /* UINavigationController-Extension.swift */; };
 		C78753A32A1BAAC800CC5CFA /* ProfileBottomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78753A12A1BAAC800CC5CFA /* ProfileBottomViewController.swift */; };
 		C78753A82A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78753A62A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.swift */; };
 		C78753A92A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C78753A72A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.xib */; };
@@ -99,6 +104,11 @@
 		C754A8B62A36160700690E73 /* NSDate-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDate-Extension.swift"; sourceTree = "<group>"; };
 		C7598F8B2A259F0E00C37AFB /* ProfileChangeDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileChangeDetailViewController.swift; sourceTree = "<group>"; };
 		C764B7472A21AF0B0013ED40 /* ProfileAddAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAddAccountViewController.swift; sourceTree = "<group>"; };
+		C77452612A3963530075AD96 /* ExploreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewController.swift; sourceTree = "<group>"; };
+		C77452642A3980F60075AD96 /* UserCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollectionViewCell.swift; sourceTree = "<group>"; };
+		C77452652A3980F60075AD96 /* UserCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UserCollectionViewCell.xib; sourceTree = "<group>"; };
+		C774526A2A39ACC90075AD96 /* ReelsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReelsViewController.swift; sourceTree = "<group>"; };
+		C774526C2A39C9710075AD96 /* UINavigationController-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController-Extension.swift"; sourceTree = "<group>"; };
 		C78753A12A1BAAC800CC5CFA /* ProfileBottomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBottomViewController.swift; sourceTree = "<group>"; };
 		C78753A62A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBottomCollectionViewCell.swift; sourceTree = "<group>"; };
 		C78753A72A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileBottomCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -241,7 +251,9 @@
 		C71A4FB32A171C10003F4B9D /* ClassCode */ = {
 			isa = PBXGroup;
 			children = (
+				C77452682A39AC9B0075AD96 /* Reels */,
 				C7598F892A259DFB00C37AFB /* APIService */,
+				C774525F2A3963160075AD96 /* Explore */,
 				C75478B02A37121800D4CDB3 /* Follow */,
 				C79215D72A31EB46009E9404 /* Like */,
 				C718703B2A323ED000EB98FD /* Comment */,
@@ -261,6 +273,7 @@
 				C7D155BC2A26EC51007073AA /* UILabel-Extension.swift */,
 				C78B03C62A30336400B9B57D /* UIViewController-Extension.swift */,
 				C754A8B62A36160700690E73 /* NSDate-Extension.swift */,
+				C774526C2A39C9710075AD96 /* UINavigationController-Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -393,6 +406,48 @@
 				C715C51F2A2F4FFC002C8DBD /* DetailPostViewController.swift */,
 			);
 			path = Other;
+			sourceTree = "<group>";
+		};
+		C774525F2A3963160075AD96 /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				C77452632A3980CD0075AD96 /* Cell */,
+				C77452602A39633D0075AD96 /* Controller */,
+			);
+			path = Explore;
+			sourceTree = "<group>";
+		};
+		C77452602A39633D0075AD96 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				C77452612A3963530075AD96 /* ExploreViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		C77452632A3980CD0075AD96 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				C77452642A3980F60075AD96 /* UserCollectionViewCell.swift */,
+				C77452652A3980F60075AD96 /* UserCollectionViewCell.xib */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		C77452682A39AC9B0075AD96 /* Reels */ = {
+			isa = PBXGroup;
+			children = (
+				C77452692A39ACAB0075AD96 /* Controller */,
+			);
+			path = Reels;
+			sourceTree = "<group>";
+		};
+		C77452692A39ACAB0075AD96 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				C774526A2A39ACC90075AD96 /* ReelsViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		C78753A52A1BB5ED00CC5CFA /* Cells */ = {
@@ -603,6 +658,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7B5680E2A20BF9D00F47C14 /* ProfileChangeTableViewCell.xib in Resources */,
+				C77452672A3980F60075AD96 /* UserCollectionViewCell.xib in Resources */,
 				C795B19F2A1DFFA50067F7D5 /* StorySavedCollectionViewCell.xib in Resources */,
 				C71A4FAB2A171B91003F4B9D /* LaunchScreen.storyboard in Resources */,
 				C7B9E5B82A23B5BA00D2E94D /* SignInViewController.xib in Resources */,
@@ -670,6 +726,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7357D232A25F0BD00070A20 /* UserService.swift in Sources */,
+				C774526D2A39C9710075AD96 /* UINavigationController-Extension.swift in Sources */,
 				C78CDE6A2A178243004835F7 /* IGActivityIndicator.swift in Sources */,
 				C7D155BB2A26E175007073AA /* ProfileViewModel.swift in Sources */,
 				C7598F8C2A259F0E00C37AFB /* ProfileChangeDetailViewController.swift in Sources */,
@@ -682,6 +739,7 @@
 				C79B65CB2A249C4B00765EAB /* User.swift in Sources */,
 				C78CDE672A177A1C004835F7 /* UIView-Extension.swift in Sources */,
 				C78753A82A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.swift in Sources */,
+				C774526B2A39ACC90075AD96 /* ReelsViewController.swift in Sources */,
 				C7AB44E52A32C50D00D66A5B /* HeaderCommentView.swift in Sources */,
 				C7B568092A20BD8100F47C14 /* ProfileChangeTopTableViewCell.swift in Sources */,
 				C740F7A82A32BA4800B58DB1 /* CommentViewController.swift in Sources */,
@@ -698,6 +756,7 @@
 				C711127F2A2A3AE200CFFD6B /* PostStatusViewController.swift in Sources */,
 				C78B03C72A30336400B9B57D /* UIViewController-Extension.swift in Sources */,
 				C71BBCDC2A2ADE0000FB7FB9 /* Post.swift in Sources */,
+				C77452662A3980F60075AD96 /* UserCollectionViewCell.swift in Sources */,
 				C7E2E3342A1FC43800DF0754 /* ProfileMoreViewController.swift in Sources */,
 				C78CDE6C2A17BE88004835F7 /* CustomNavigationBar.swift in Sources */,
 				C7924DEC2A32FBEB000756A0 /* CustomCommentView.swift in Sources */,
@@ -716,6 +775,7 @@
 				C795B19E2A1DFFA50067F7D5 /* StorySavedCollectionViewCell.swift in Sources */,
 				C7B9E5B72A23B5BA00D2E94D /* SignInViewController.swift in Sources */,
 				C715C5202A2F4FFC002C8DBD /* DetailPostViewController.swift in Sources */,
+				C77452622A3963530075AD96 /* ExploreViewController.swift in Sources */,
 				C71A4FBC2A172990003F4B9D /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

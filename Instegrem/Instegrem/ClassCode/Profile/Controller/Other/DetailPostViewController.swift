@@ -22,9 +22,10 @@ class DetailPostViewController: UIViewController {
     var type: String!
     var indexPath: IndexPath!
     var user: User!
+    var naviationBarTitle: String = ""
     override func viewDidLoad() {
         print("DEBUG: other viewDidLoad")
-
+        getCurrentUser()
         super.viewDidLoad()
         view.backgroundColor = .white
         configUI()
@@ -34,19 +35,30 @@ class DetailPostViewController: UIViewController {
         print("DEBUG: DEINIT DetailPostViewController")
     }
     
+    func getCurrentUser() {
+        let tabbar = tabBarController as! TabBarController
+        user = tabbar.user
+    }
+    
     func configUI() {
         let firstLeftButton = UIButton(type: .system)
         firstLeftButton.setImage(UIImage(named: "ic-back_small")?.withRenderingMode(.alwaysOriginal), for: .normal)
         firstLeftButton.addTarget(self, action: #selector(backButtonTapped(_:)), for: .touchUpInside)
         
         let centerButton = UIButton()
-        
-        let nameAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10, weight: .semibold), NSAttributedString.Key.foregroundColor: UIColor.darkGray]
-        let titleAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .semibold)]
-        let myString = NSMutableAttributedString(string: self.posts[0].user.userName.uppercased(), attributes: nameAttribute )
-        let attrString = NSAttributedString(string: "\n" + self.type, attributes: titleAttribute)
-        myString.append(attrString)
-        centerButton.setAttributedTitle(myString, for: .normal)
+
+        if naviationBarTitle == "" {
+            let nameAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10, weight: .semibold), NSAttributedString.Key.foregroundColor: UIColor.darkGray]
+            let titleAttribute = [ NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .semibold)]
+            let myString = NSMutableAttributedString(string: self.posts[0].user.userName.uppercased(), attributes: nameAttribute )
+            let attrString = NSAttributedString(string: "\n" + self.type, attributes: titleAttribute)
+            myString.append(attrString)
+            centerButton.setAttributedTitle(myString, for: .normal)
+        } else {
+            centerButton.setTitle(naviationBarTitle, for: .normal)
+            centerButton.setTitleColor(.black, for: .normal)
+            centerButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        }
         centerButton.titleLabel?.numberOfLines = 2
         centerButton.titleLabel?.textAlignment = .center
 //        centerButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
@@ -98,7 +110,7 @@ class DetailPostViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         print("DEBUG: other viewDidLayoutSubviews")
         if indexPath != nil {
-            collectionView.scrollToItem(at: indexPath, at: .top, animated: false)
+            collectionView.scrollToItem(at: IndexPath(item: indexPath.item, section: 0), at: .top, animated: false)
             collectionView.layoutSubviews()
             indexPath = nil
         }
@@ -192,7 +204,7 @@ extension DetailPostViewController: PostDelegate {
     }
     
     func likePost(indexPath: IndexPath, isLike: Bool, numberOfLike: Int) {
-        let uid = posts[0].user.uid
+        let uid = user.uid
         if isLike {
             HomeService.likeStatus(idPost: posts[indexPath.row].idPost, uid: uid, completion: { error in
                 if let error = error {

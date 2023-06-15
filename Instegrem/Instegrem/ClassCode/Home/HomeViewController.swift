@@ -166,7 +166,7 @@ class HomeViewController: UIViewController {
             loadingView.startAnimating()
             loadingView.isHidden = false
         }
-        HomeService.fetchPost(completion: { [weak self] data, error in
+        HomeService.fetchFollowingPost(user: user, completion: { [weak self] data, error in
             self?.refreshControl.endRefreshing()
             self?.loadingView.stopAnimating()
 //            self?.loadingView.isHidden = true

@@ -137,6 +137,30 @@ class HomeService {
         })
     }
     
+    public static func fetchFollowingPost(user: User, completion: @escaping([Post], Error?) -> Void) {
+        UserService.getAllFolowing(uid: user.uid, completion: { users, error in
+            if let error = error {
+                completion([], error)
+            }
+            var newUsers = users
+            newUsers.append(user)
+            var homePosts: [Post] =  []
+            var countPost = 0
+            for user in newUsers {
+                fetchUserPosts(user: user, completion: { posts, error in
+                    homePosts.append(contentsOf: posts)
+                    countPost += 1
+                    if countPost == newUsers.count {
+                        homePosts = homePosts.sorted { $0.time > $1.time } 
+                        completion(homePosts, nil)
+                        return
+                    }
+                })
+            }
+            completion(homePosts, nil)
+        })
+    }
+    
     public static func likeStatus(idPost: String, uid: String, completion: @escaping (Error?) -> Void) {
         let dict: [String: Any] = [uid: 1]
         db.collection("like").document(idPost).setData(dict, merge: true) { error in
@@ -181,7 +205,6 @@ class HomeService {
                 return
             }
             guard let uid = Auth.auth().currentUser?.uid else { return }
-            var countUser = 0
             var users: [User] = []
             for (idUser, _) in data {
                 UserService.getUser(uid: idUser, completion: { dataUser, err in
@@ -189,19 +212,18 @@ class HomeService {
                         completion([], error)
                         return
                     }
-                    countUser += 1
                     var user = User(uid: idUser, dictionary: dataUser)
                     if user.uid != uid {
                         UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
                             user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
                             users.append(user)
-                            if countUser == data.count {
+                            if users.count == data.count {
                                 completion(users, nil)
                             }
                         })
                     } else {
                         users.append(user)
-                        if countUser == data.count {
+                        if users.count == data.count {
                             completion(users, nil)
                         }
                     }

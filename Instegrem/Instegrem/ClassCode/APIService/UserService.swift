@@ -12,8 +12,55 @@ import FirebaseAuth
 class UserService {
     static let db = Firestore.firestore()
     
-    public static func fetchUser() {
-        
+    public static func fetchUserByName(key: String, completion: @escaping ([User], Error?) -> Void) {
+        db.collection("users").getDocuments(completion: { documentSnap, error in
+                if let error = error {
+                    completion([],error)
+                    return
+                }
+                var users: [User] = []
+                guard let listDocs = documentSnap?.documents else {
+                    completion([],error)
+                    return
+                }
+                guard let currentUID = Auth.auth().currentUser?.uid else { return }
+                if listDocs.isEmpty { completion([], nil); return }
+                for doc in listDocs {
+                    var user = User(uid: doc.documentID, dictionary: doc.data())
+                    if user.uid != currentUID {
+                        UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
+                            user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
+                            users.append(user)
+                            if users.count == listDocs.count {
+                                if key == "" {
+                                    completion(users, nil)
+                                    return
+                                } else {
+                                    let searchUser = users.filter({ user in
+                                        user.userName.lowercased().contains(key.lowercased())
+                                    })
+                                    completion(searchUser, nil)
+                                    return
+                                }
+                            }
+                        })
+                    } else {
+                        users.append(user)
+                        if users.count == listDocs.count {
+                            if key == "" {
+                                completion(users, nil)
+                                return
+                            } else {
+                                let searchUser = users.filter({ user in
+                                    user.userName.lowercased().contains(key.lowercased())
+                                })
+                                completion(searchUser, nil)
+                                return
+                            }
+                        }
+                    }
+                }
+            })
     }
     
     public static func updateUser(user: User, avatar: UIImage?, completion: @escaping (Error?) -> Void) {
@@ -24,7 +71,7 @@ class UserService {
             }
             return
         }
-
+        
         guard let imageData = avatar.jpegData(compressionQuality: 0.3) else {return}
         
         let fileID = NSUUID().uuidString

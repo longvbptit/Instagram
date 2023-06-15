@@ -84,7 +84,7 @@ enum CreateIcon: String, CaseIterable {
     func image() -> String {
         switch self {
         case .reel:
-            return "ic-reel"
+            return "ic-reels"
         case .post:
             return "ic-posts"
         case .story:

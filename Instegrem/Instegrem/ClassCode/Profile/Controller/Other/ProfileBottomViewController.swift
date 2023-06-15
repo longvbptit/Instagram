@@ -34,7 +34,6 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-        //        collectionVieww.collectionViewLayout = createLayout()
         layoutCollection()
         collectionView.register(UINib(nibName: "ProfileBottomCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ProfileBottomCollectionViewCell")
         collectionView.delegate = self

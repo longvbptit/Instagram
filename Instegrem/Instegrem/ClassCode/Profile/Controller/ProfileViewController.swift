@@ -493,7 +493,7 @@ class ProfileViewController: UIViewController {
         let vc1 = ProfileBottomViewController()
         vc1.pageIndex = 1
         vc1.pageTitle = "Reel"
-        vc1.pageImage = "ic-reel"
+        vc1.pageImage = "ic-reels"
         vc1.count = 20
         vc1.color = .red
         
@@ -799,7 +799,7 @@ extension ProfileViewController: PostProfileDelegate {
         vc.posts = posts
         vc.type = type
         vc.indexPath = indexPath
-        vc.user = user
+//        vc.user = user
         navigationController?.pushViewController(vc, animated: true)
     }
 }

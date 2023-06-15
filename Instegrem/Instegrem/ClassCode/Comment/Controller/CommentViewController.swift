@@ -144,8 +144,8 @@ class CommentViewController: UIViewController {
         tableView.refreshControl = refreshControl
         
         NSLayoutConstraint.activate([
-            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            loadingView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 80),
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
