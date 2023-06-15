@@ -12,6 +12,10 @@ protocol FollowUserDelegate: NSObject {
     func removeFollower(uid: String, indexPath: IndexPath)
 }
 
+extension FollowUserDelegate {
+    func removeFollower(uid: String, indexPath: IndexPath) { }
+}
+
 class LikeViewController: UIViewController {
     let refreshControl: UIRefreshControl = UIRefreshControl()
     var loadingView: UIActivityIndicatorView = UIActivityIndicatorView()
@@ -22,6 +26,7 @@ class LikeViewController: UIViewController {
     var filteredUsers: [User] = []
     var searchBar: UISearchBar!
     var isSearching: Bool = false
+    var viewModel: LikeViewModel = LikeViewModel()
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -172,26 +177,16 @@ extension LikeViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension LikeViewController: FollowUserDelegate {
-    func removeFollower(uid: String, indexPath: IndexPath) {
-        return
-    }
-    
     func followUser(uid: String, indexPath: IndexPath) {
         if users[indexPath.row].isFollowByCurrentUser == .notFollowYet {
-            UserService.followUser(uid: uid, completion: { [weak self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
+            viewModel.followUser(uid: uid, completion: { [weak self] result in
+                if !result { return }
                 self?.users[indexPath.row].isFollowByCurrentUser = .followed
                 self?.tableView.reloadRows(at: [indexPath], with: .none)
             })
         } else {
-            UserService.unfollowUser(uid: uid, completion: { [weak self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
+            viewModel.unFollowUser(uid: uid, completion: { [weak self] result in
+                if !result { return }
                 self?.users[indexPath.row].isFollowByCurrentUser = .notFollowYet
                 self?.tableView.reloadRows(at: [indexPath], with: .none)
             })

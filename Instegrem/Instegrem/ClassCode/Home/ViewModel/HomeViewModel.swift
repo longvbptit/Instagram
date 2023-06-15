@@ -12,6 +12,8 @@ class HomeViewModel {
     var dataHome: [Post] = []
     var completion: (() -> Void)?
     var uploadPostCompletion: ((Bool) -> Void)?
+    var userPosts: [Post] = []
+    var getUserPostCompletion: (() -> Void)?
     func fetchHomePost(user: User) {
         HomeService.fetchFollowingPost(user: user, completion: { [weak self] data, error in
             if error != nil {
@@ -20,6 +22,21 @@ class HomeViewModel {
             }
             self?.dataHome = data
             self?.completion?()
+        })
+    }
+    
+    func getUserPost(user: User) {
+        HomeService.fetchUserPosts(user: user, completion: { [weak self] data, error in
+            guard let strongSelf = self else { return }
+            if let error = error {
+                strongSelf.getUserPostCompletion?()
+                print("Cant get posts. Error: \(error)")
+                return
+            }
+            
+            strongSelf.userPosts = data
+            strongSelf.getUserPostCompletion?()
+
         })
     }
     

@@ -18,8 +18,8 @@ class ReelsViewController: UIViewController {
 
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-//        navigationController?.navigationBar.isHidden = true
+    deinit {
+        print("DEBUG: DEINIT ReelsViewController")
     }
     
     func configUI() {

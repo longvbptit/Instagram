@@ -24,6 +24,7 @@ class FollowBottomViewController: UIViewController {
     var filteredUsers: [User] = []
     var isSearching: Bool = false
     let currentUID = Auth.auth().currentUser?.uid ?? ""
+    var viewModel: FollowViewModel = FollowViewModel()
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSearchBar()
@@ -145,11 +146,8 @@ extension FollowBottomViewController: UITableViewDelegate, UITableViewDataSource
 
 extension FollowBottomViewController: FollowUserDelegate {
     func removeFollower(uid: String, indexPath: IndexPath) {
-        UserService.removeFollower(uid: uid, completion: { [weak self] error in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
+        viewModel.removeFollower(uid: uid, completion: { [weak self] result in
+            if !result { return }
             if indexPath.row >= 0 && indexPath.row < self?.users.count ?? 0 {
                 self?.users.remove(at: indexPath.row)
                 self?.delegate?.updatefollower(num: self?.users.count ?? 0)
@@ -157,29 +155,20 @@ extension FollowBottomViewController: FollowUserDelegate {
                 self?.tableView.deleteRows(at: [indexPath], with: .automatic)
                 self?.tableView.endUpdates()
             }
-            
-//            self?.users.removeAll(where: {$0.uid.contains(uid)})
-            
         })
     }
     
     func followUser(uid: String, indexPath: IndexPath) {
         if users[indexPath.row].isFollowByCurrentUser == .notFollowYet {
-            UserService.followUser(uid: uid, completion: { [weak self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
+            viewModel.followUser(uid: uid, completion: { [weak self] result in
+                if !result { return }
                 self?.delegate?.updatefollowing(num: 1, fromFollower: true)
                 self?.users[indexPath.row].isFollowByCurrentUser = .followed
                 self?.tableView.reloadRows(at: [indexPath], with: .none)
             })
         } else {
-            UserService.unfollowUser(uid: uid, completion: { [weak self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
+            viewModel.unFollowUser(uid: uid, completion: { [weak self] result in
+                if !result { return }
                 self?.delegate?.updatefollowing(num: -1, fromFollower: true)
                 self?.users[indexPath.row].isFollowByCurrentUser = .notFollowYet
                 self?.tableView.reloadRows(at: [indexPath], with: .none)

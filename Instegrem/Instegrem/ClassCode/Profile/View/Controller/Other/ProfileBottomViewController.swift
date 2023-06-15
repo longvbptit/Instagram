@@ -38,7 +38,6 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
         collectionView.register(UINib(nibName: "ProfileBottomCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ProfileBottomCollectionViewCell")
         collectionView.delegate = self
         collectionView.dataSource = self
-        
     }
     
     func layoutCollection() {
@@ -88,8 +87,6 @@ class ProfileBottomViewController: UIViewController, UICollectionViewDataSource,
         delegate.gotoDetaiPost(posts: posts, type: "Posts", indexPath: indexPath)
     }
 }
-
-
 
 class SimultaneousPinchPanGestureRecognizer: UIPinchGestureRecognizer {
     override func canPrevent(_ preventedGestureRecognizer: UIGestureRecognizer) -> Bool {

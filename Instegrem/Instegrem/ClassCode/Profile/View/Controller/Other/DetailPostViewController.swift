@@ -8,17 +8,10 @@
 import UIKit
 
 class DetailPostViewController: UIViewController {
+    var viewModel: HomeViewModel = HomeViewModel()
     var navigationBar: CustomNavigationBar!
     var collectionView: UICollectionView!
-    var posts: [Post] = [] {
-        didSet {
-            if collectionView != nil {
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
-            }
-        }
-    }
+    var posts: [Post] = []
     var type: String!
     var indexPath: IndexPath!
     var user: User!
@@ -54,15 +47,13 @@ class DetailPostViewController: UIViewController {
             let attrString = NSAttributedString(string: "\n" + self.type, attributes: titleAttribute)
             myString.append(attrString)
             centerButton.setAttributedTitle(myString, for: .normal)
+            centerButton.titleLabel?.numberOfLines = 2
         } else {
             centerButton.setTitle(naviationBarTitle, for: .normal)
             centerButton.setTitleColor(.black, for: .normal)
             centerButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         }
-        centerButton.titleLabel?.numberOfLines = 2
         centerButton.titleLabel?.textAlignment = .center
-//        centerButton.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-//        centerButton.setTitleColor(UIColor.black, for: .normal)
         centerButton.isUserInteractionEnabled = false
         
         navigationBar = CustomNavigationBar(leftButtons: [firstLeftButton], centerButton: centerButton)
@@ -129,16 +120,11 @@ class DetailPostViewController: UIViewController {
     }
     
     func getPosts() {
-        HomeService.fetchUserPosts(user: user, completion: { [weak self] data, error in
-            guard let strongSelf = self else { return }
-            if let error = error {
-                print("Cant get posts. Error: \(error)")
-                return
-            }
-            
-            strongSelf.posts = data
-            
-        })
+        viewModel.getUserPost(user: user)
+        viewModel.getUserPostCompletion = { [weak self] in
+            self?.posts = self?.viewModel.userPosts ?? []
+            self?.collectionView.reloadData()
+        }
     }
     
     func createLayout() -> UICollectionViewLayout{
@@ -148,10 +134,10 @@ class DetailPostViewController: UIViewController {
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(300))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-//        group.interItemSpacing = .fixed(1.5)
         
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 10
+        
         let layout = UICollectionViewCompositionalLayout(section: section)
         
         return layout
@@ -165,6 +151,7 @@ class DetailPostViewController: UIViewController {
 }
 
 extension DetailPostViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return posts.count
     }
@@ -176,7 +163,6 @@ extension DetailPostViewController: UICollectionViewDelegate, UICollectionViewDa
         cell.delegate = self
         return cell
     }
-    
     
 }
 
@@ -206,23 +192,17 @@ extension DetailPostViewController: PostDelegate {
     func likePost(indexPath: IndexPath, isLike: Bool, numberOfLike: Int) {
         let uid = user.uid
         if isLike {
-            HomeService.likeStatus(idPost: posts[indexPath.row].idPost, uid: uid, completion: { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
-            })
+            viewModel.likePost(idPost: posts[indexPath.row].idPost, uid: uid)
         } else {
-            HomeService.unLikeStatus(idPost: posts[indexPath.row].idPost, uid: uid, completion: { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
-            })
+            viewModel.unLikePost(idPost: posts[indexPath.row].idPost, uid: uid)
         }
         posts[indexPath.row].isLiked = isLike
         posts[indexPath.row].numberOfLike = numberOfLike
-//        collectionView.reloadItems(at: [indexPath])
+        UIView.performWithoutAnimation {
+            collectionView.performBatchUpdates({
+                collectionView.reloadItems(at: [indexPath])
+            }, completion: nil)
+        }
     }
 }
 

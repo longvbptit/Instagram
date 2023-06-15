@@ -34,6 +34,10 @@ class ExploreViewController: UIViewController {
         navigationController?.navigationBar.isHidden = true
     }
     
+    deinit {
+        print("DEBUG: DEINIT ExploreViewController")
+    }
+    
     func configUI() {
         
         searchView = UIView()
@@ -260,10 +264,6 @@ extension ExploreViewController: UISearchBarDelegate {
 }
 
 extension ExploreViewController: FollowUserDelegate {
-    func removeFollower(uid: String, indexPath: IndexPath) {
-        return
-    }
-    
     func followUser(uid: String, indexPath: IndexPath) {
         if users[indexPath.row].isFollowByCurrentUser == .notFollowYet {
             viewModel.followUser(uid: uid, completion: { [weak self] result in

@@ -163,11 +163,16 @@ class UserService {
     static public func removeFollower(uid: String, completion: @escaping (Error?) -> Void) {
         guard let currenUID = Auth.auth().currentUser?.uid else { return }
         db.collection("following").document(uid).updateData([currenUID: FieldValue.delete()]) { err in
-            completion(err)
+            if let error = err {
+                completion(error)
+            }
         }
         db.collection("followers").document(currenUID).updateData([uid: FieldValue.delete()]) { err in
-            completion(err)
+            if let error = err {
+                completion(error)
+            }
         }
+        completion(nil)
     }
     
     static public func checkFollowedByCurrenUser(uid: String, completion: @escaping (Bool, Error?) -> Void) {

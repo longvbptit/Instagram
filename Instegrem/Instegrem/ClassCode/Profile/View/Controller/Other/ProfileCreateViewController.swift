@@ -35,7 +35,6 @@ class ProfileCreateViewController: CustomPresentViewController {
         tableView.addGestureRecognizer(panGesture)
     }
 
-
 }
 
 extension ProfileCreateViewController: UITableViewDelegate, UITableViewDataSource {
@@ -70,7 +69,6 @@ extension ProfileCreateViewController: UITableViewDelegate, UITableViewDataSourc
             self.animateDismissView()
         }
     }
-    
     
 }
 enum CreateIcon: String, CaseIterable {

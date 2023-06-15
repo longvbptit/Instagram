@@ -34,6 +34,8 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var numberOfFollowerButton: UIButton!
     @IBOutlet weak var numberOfFollowingButton: UIButton!
     
+    var viewModel: ProfileViewModel = ProfileViewModel()
+    
     var overlayScrollView: UIScrollView!
     var currentIndex: Int = 0
     var indicator: IGActivityIndicator!
@@ -109,21 +111,30 @@ class ProfileViewController: UIViewController {
         layoutOverlayScrollView()
         horizontalContainerView.delegate = self
         setupStoryCollection()
-        if isOrigin {
-            getCurrentUser()
-        } else {
-            updateUserUI()
-        }
+        
+        getUser()
         if user.isFollowByCurrentUser == .currenUser {
             changeProfileButton.addTarget(self, action: #selector(changeProfileButtonTapped(_:)), for: .touchUpInside)
         } else {
             changeProfileButton.addTarget(self, action: #selector(followUserButtonTapped(_:)), for: .touchUpInside)
         }
         setUpLoadingView()
+        bindingData()
+    }
+    
+    func getUser() {
+        if isOrigin {
+            getCurrentUser()
+        } else {
+            updateUserUI()
+        }
+        viewModel.user = user
+    }
+    
+    func bindingData() {
         getPosts()
         getFollowers()
         getFollowing()
-        
     }
     
     func updateFollowUserButton() {
@@ -153,61 +164,53 @@ class ProfileViewController: UIViewController {
     }
     
     func getFollowers() {
-        UserService.getAllFolowers(uid: user.uid, completion: { [weak self] followers, error in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
-            self?.followers = followers
-        })
+        viewModel.getFollowers()
+        viewModel.getFollowersCompletion = { [weak self] in
+            self?.followers = self?.viewModel.followers ?? []
+        }
     }
     
     func getFollowing() {
-        UserService.getAllFolowing(uid: user.uid, completion: { [weak self] following, error in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
-            self?.following = following
-        })
+        viewModel.getFollowing()
+        viewModel.getFollowingCompletion = { [weak self] in
+            self?.following = self?.viewModel.following ?? []
+        }
     }
     
     func getPosts() {
-        if self.posts.count == 0 {
+        if posts.count == 0 {
             view.bringSubviewToFront(loadingView)
             loadingView.startAnimating()
             loadingView.isHidden = false
         }
-        HomeService.fetchUserPosts(user: user, completion: { [weak self] data, error in
+        viewModel.fetchUserPost()
+        viewModel.getPostCompletion = { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.refreshControl.endRefreshing()
             strongSelf.loadingView.stopAnimating()
             strongSelf.loadingView.removeFromSuperview()
-            if let error = error {
-                print("Cant get posts. Error: \(error)")
-                return
-            }
-            strongSelf.posts = data
+            
+            strongSelf.posts = strongSelf.viewModel.posts
             for vc in strongSelf.childBottomVC {
                 vc.posts = strongSelf.posts
                 vc.delegate = strongSelf
             }
-            
-            self?.updateBottom()
-        })
+            strongSelf.updateBottom()
+        }
+    }
+    
+    func fetchUser() {
+        viewModel.getUser()
+        viewModel.getUserCompletion = { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.user = strongSelf.viewModel.user
+            strongSelf.updateUI()
+        }
     }
     
     @objc func reloadData() {
-        getPosts()
-        getFollowers()
-        getFollowing()
-        UserService.getUser(uid: user.uid, completion: { [weak self] dataUser, err in
-            if err != nil {
-                return
-            }
-            self?.user = User(uid: dataUser["uid"] as! String, dictionary: dataUser)
-            self?.updateUserUI()
-        })
+        bindingData()
+        fetchUser()
     }
     
     func updateBottom() {
@@ -395,7 +398,7 @@ class ProfileViewController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         print("DEBUG: profile viewWillApear")
         navigationController?.isNavigationBarHidden = true
 //        horizontalContainerView.contentSize = CGSize(width: view.frame.width * 3, height: horizontalContainerView.contentSize.height)
@@ -575,11 +578,8 @@ class ProfileViewController: UIViewController {
     
     @objc func followUserButtonTapped(_ sender: UIButton) {
         if user.isFollowByCurrentUser == .notFollowYet {
-            UserService.followUser(uid: user.uid, completion: { [weak self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
+            viewModel.followUser(uid: user.uid, completion: { [weak self] result in
+                if !result { return }
                 self?.getFollowers()
                 UIView.performWithoutAnimation {
                     self?.user.isFollowByCurrentUser = .followed
@@ -590,11 +590,8 @@ class ProfileViewController: UIViewController {
                 }
             })
         } else if user.isFollowByCurrentUser == .followed {
-            UserService.unfollowUser(uid: user.uid, completion: { [weak self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
+            viewModel.unFollowUser(uid: user.uid, completion: { [weak self] result in
+                if !result { return }
                 self?.getFollowers()
                 UIView.performWithoutAnimation {
                     self?.user.isFollowByCurrentUser = .notFollowYet
@@ -603,7 +600,6 @@ class ProfileViewController: UIViewController {
                     self?.changeProfileButton.backgroundColor = UIColor(red: 41/255, green: 153/255, blue: 251/255, alpha: 1)
                     self?.changeProfileButton.layoutIfNeeded()
                 }
-                
             })
         }
     }
@@ -799,7 +795,6 @@ extension ProfileViewController: PostProfileDelegate {
         vc.posts = posts
         vc.type = type
         vc.indexPath = indexPath
-//        vc.user = user
         navigationController?.pushViewController(vc, animated: true)
     }
 }

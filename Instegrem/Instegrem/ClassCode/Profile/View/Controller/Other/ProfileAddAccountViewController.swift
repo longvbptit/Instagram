@@ -95,7 +95,6 @@ class ProfileAddAccountViewController: CustomPresentViewController {
     @objc func logoutButtonTapped(_ sender: UIButton) {
         AuthService.logOut()
         (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(UINavigationController(rootViewController: LoginViewController()))
-        
     }
 
 }

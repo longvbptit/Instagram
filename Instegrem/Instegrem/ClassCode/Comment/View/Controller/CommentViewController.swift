@@ -23,6 +23,7 @@ class CommentViewController: UIViewController {
     var commentButton: UIButton!
     var placeholder: String!
     weak var delegate: CommentPostDelegate!
+    var viewModel: CommentViewModel!
     override func viewDidLoad() {
         super.viewDidLoad()
         hideKeyboardWhenTappedAround()
@@ -33,7 +34,7 @@ class CommentViewController: UIViewController {
         setUpLoadingView()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-        // Do any additional setup after loading the view.
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -48,6 +49,7 @@ class CommentViewController: UIViewController {
     func getCurrentUser() {
         let tabbar = tabBarController as! TabBarController
         user = tabbar.user
+        viewModel = CommentViewModel(user: user)
     }
     
     func configUI() {
@@ -77,7 +79,6 @@ class CommentViewController: UIViewController {
         
         inputTextView = UITextView()
         inputTextView.delegate = self
-        //        inputTextView.text = "Viết comment"
         inputTextView.textColor = .black
         inputTextView.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         inputTextView.sizeToFit()
@@ -155,19 +156,15 @@ class CommentViewController: UIViewController {
             loadingView.startAnimating()
             loadingView.isHidden = false
         }
-        HomeService.getCommentPost(idPost: post.idPost, completion: { [weak self] comments, error in
+        viewModel.getCommentPost(idPost: post.idPost)
+        viewModel.getCommentPostCompletion = { [weak self] in
             self?.refreshControl.endRefreshing()
             self?.loadingView.stopAnimating()
             self?.loadingView.isHidden = true
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
-            self?.comments = comments.sorted { $0.time > $1.time }
-            DispatchQueue.main.async {
-                self?.tableView.reloadData()
-            }
-        })
+            let allComment = self?.viewModel.comments ?? []
+            self?.comments = allComment.sorted { $0.time > $1.time }
+            self?.tableView.reloadData()
+        }
     }
     
     @objc func backButtonTapped(_ sender: UIButton) {
@@ -175,21 +172,17 @@ class CommentViewController: UIViewController {
     }
     
     @objc func commentButtonTapped(_ sender: UIButton) {
-        HomeService.addComment(idPost: post.idPost, comment: inputTextView.text, completion: { [weak self] comment, time, error in
+        viewModel.addComment(idPost: post.idPost, comment: inputTextView.text)
+        viewModel.addCommentCompletion = { [weak self] in
             guard let strongSelf = self else { return }
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
+            strongSelf.comments = strongSelf.viewModel.comments
             strongSelf.inputTextView.text = ""
             strongSelf.commentButton.isEnabled = false
-            let newComment = Comment(user: strongSelf.user, time: time, comment: comment)
-            strongSelf.comments.insert(newComment, at: 0)
             let indexPath = IndexPath(row: 1, section: 0)
             strongSelf.tableView.insertRows(at: [indexPath], with: .automatic)
             strongSelf.delegate.updateNumberOfCommentButton(indexPath: strongSelf.indexPath,
                                                             numberOfComment: strongSelf.comments.count)
-        })
+        }
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
