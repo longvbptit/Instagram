@@ -12,19 +12,13 @@ class HomeViewController: UIViewController {
     var navigationBar: CustomNavigationBar!
     var collectionView: UICollectionView!
     var user: User!
-    var dataHome: [Post] = [] {
-        didSet {
-//            DispatchQueue.main.async {
-//                self.collectionView.reloadData()
-//            }
-        }
-    }
+    var dataHome: [Post] = []
     lazy var refreshControl: UIRefreshControl = {
         let rfc = UIRefreshControl()
         
         return rfc
     }()
-    
+    var viewModel: HomeViewModel = HomeViewModel()
     var loadingView: UIActivityIndicatorView = UIActivityIndicatorView()
     
     var story: [Story] = [Story(image: "ic-story0", title: "Tin của bạn"),
@@ -42,13 +36,16 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         configUI()
         getCurrentUser()
-        fetchPosts()
-        
+        bindingData()
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name("PostNewStatus"), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = true
+    }
+    
+    func bindingData() {
+        fetchPosts()
     }
     
     func getCurrentUser() {
@@ -57,14 +54,12 @@ class HomeViewController: UIViewController {
     }
     
     @objc func reloadData() {
+        getCurrentUser()
         fetchPosts()
     }
     
     func configUI() {
-        view.addSubview(loadingView)
-        loadingView.style = .large
-        loadingView.translatesAutoresizingMaskIntoConstraints = false
-        refreshControl.addTarget(self, action: #selector(fetchPosts), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(reloadData), for: .valueChanged)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -74,6 +69,9 @@ class HomeViewController: UIViewController {
         collectionView.register(UINib(nibName: "StorySavedCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "StorySavedCollectionViewCell")
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
+        view.addSubview(loadingView)
+        loadingView.style = .large
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
         let firstLeftButton = UIButton(type: .system)
         firstLeftButton.setImage(UIImage(named: "ic-logo_text")?.withRenderingMode(.alwaysOriginal), for: .normal)
         
@@ -159,23 +157,16 @@ class HomeViewController: UIViewController {
     }
     
     @objc func fetchPosts() {
-//        refreshControl.isHidden = true
-        getCurrentUser()
         if self.dataHome.count == 0 {
-            view.bringSubviewToFront(loadingView)
             loadingView.startAnimating()
-            loadingView.isHidden = false
         }
-        HomeService.fetchFollowingPost(user: user, completion: { [weak self] data, error in
-            self?.refreshControl.endRefreshing()
+        self.refreshControl.endRefreshing()
+        viewModel.fetchHomePost(user: user)
+        viewModel.completion = { [weak self] in
             self?.loadingView.stopAnimating()
-//            self?.loadingView.isHidden = true
-            if error != nil {
-                self?.dataHome = []
-            }
-            self?.dataHome = data
+            self?.dataHome = self?.viewModel.dataHome ?? []
             self?.collectionView.reloadData()
-        })
+        }
     }
     
     deinit {
