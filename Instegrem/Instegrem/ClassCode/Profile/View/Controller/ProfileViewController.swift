@@ -246,10 +246,13 @@ class ProfileViewController: UIViewController {
         numberOfFollowingButton.addTarget(self, action: #selector(gotoFolloweing(_:)), for: .touchUpInside)
 
         indicator = IGActivityIndicator(frame: avatarImage.frame, addWidthAndHeight: 4)
-        //        topView.layer.addSublayer(indicator)
+        topView.layer.addSublayer(indicator)
         avatarImage.clipsToBounds = true
         avatarImage.layer.cornerRadius = 40
-//        indicator.addAnimation()
+        let tapgesture = UITapGestureRecognizer(target: self, action: #selector(avatarTapGesture(_:)))
+        avatarImage.addGestureRecognizer(tapgesture)
+        avatarImage.isUserInteractionEnabled = true
+        indicator.addAnimation()
         if isOrigin {
             setupNavBar()
         } else {
@@ -261,6 +264,10 @@ class ProfileViewController: UIViewController {
         horizontalContainerView.alwaysBounceVertical = false
         horizontalContainerView.alwaysBounceHorizontal = true
         
+    }
+    
+    @objc func avatarTapGesture(_ gesture: UITapGestureRecognizer) {
+        indicator.isAnimate.toggle()
     }
     
     func updateUI() {
@@ -406,19 +413,12 @@ class ProfileViewController: UIViewController {
     
     override func viewWillLayoutSubviews() {
         print("DEBUG: profile viewWillLayoutSubviews")
-
-//        for (index, childVC) in childBottomVC.enumerated() {
-//            childVC.view.frame = CGRect(x: CGFloat(index) * view.bounds.width, y: 0, width: view.bounds.width, height:  horizontalContainerView.bounds.height)
-//            horizontalContainerView.addSubview(childVC.view)
-//            childVC.didMove(toParent: self)
-//        }
         bottomContentView.widthAnchor.constraint(equalToConstant: view.frame.width * CGFloat(childBottomVC.count)).isActive = true
         bottomContentView.heightAnchor.constraint(equalToConstant: horizontalContainerView.frame.height).isActive = true
 
         for childVC in childBottomVC {
             childVC.view.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
         }
-//        getPosts()
         bottomBarViewWidthConstraint.constant = (view.frame.width - 3) / CGFloat(childBottomVC.count)
         updateOverlayScrollContentSize(with: childBottomVC[currentIndex].collectionView)
     }

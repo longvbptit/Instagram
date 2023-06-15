@@ -19,6 +19,7 @@ class TabBarController: UITabBarController {
         tabBar.tintColor = .label
         setUpLoadingView()
         getCurrentUser()
+        self.delegate = self
     }
     
     deinit {
@@ -79,5 +80,27 @@ class TabBarController: UITabBarController {
         let navController = UINavigationController(rootViewController: rootViewController)
         navController.tabBarItem = UITabBarItem(title: nil, image: image.withRenderingMode(.alwaysOriginal), selectedImage: selectedImage)
         return navController
+    }
+}
+
+extension TabBarController: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        guard let fromView = selectedViewController?.view, let toView = viewController.view else {
+            return false // Make sure you want this as false
+        }
+        if fromView != toView {
+            UIView.transition(from: fromView, to: toView, duration: 0.1, options: [.transitionCrossDissolve], completion: nil)
+        }
+        
+        guard let tabViewControllers = viewControllers else { return false }
+//        // Pop to root controller if already on requested tab.
+        let index = tabViewControllers.firstIndex(of: viewController)
+        
+        if index == tabBarController.selectedIndex {
+            (viewController as? UINavigationController)?.popToRootViewController(animated: true)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "ScrollToTop"), object: index)
+        }
+        
+        return true
     }
 }

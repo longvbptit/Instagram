@@ -38,6 +38,23 @@ class HomeViewController: UIViewController {
         getCurrentUser()
         bindingData()
         NotificationCenter.default.addObserver(self, selector: #selector(reloadData), name: Notification.Name("PostNewStatus"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(scrollToTop(_:)), name: Notification.Name(rawValue: "ScrollToTop"), object: nil)
+
+    }
+    
+    @objc func scrollToTop(_ notification: Notification) {
+        if let index = notification.object as? Int, index == 0 {
+            if self.dataHome.count > 0 && collectionView.numberOfItems(inSection: 0) > 0 {
+                collectionView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+            }
+            if collectionView.contentOffset.y == -collectionView.contentInset.top {
+                refreshControl.beginRefreshing()
+                collectionView.setContentOffset(CGPoint(x: 0, y: -80), animated: true)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {[weak self] in
+                    self?.reloadData()
+                })
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

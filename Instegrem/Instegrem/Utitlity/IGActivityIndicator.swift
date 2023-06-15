@@ -13,7 +13,15 @@ class IGActivityIndicator: CAGradientLayer {
     var yellowColor = UIColor.init(red: 249/255, green: 260/255, blue: 52/255, alpha: 1).cgColor
     var redColor = UIColor.init(red: 238/255, green: 42/255, blue: 123/255, alpha: 1).cgColor
     var blueColor = UIColor.init(red: 98/255, green: 40/255, blue: 215/255, alpha: 1).cgColor
-
+    var isAnimate: Bool = true {
+        didSet {
+            if isAnimate {
+                addAnimation()
+            } else {
+                removeAnimation()
+            }
+        }
+    }
     var replicatorLayer = CAReplicatorLayer()
     var segmentLayer = CAShapeLayer()
     var animationDuration: Double
