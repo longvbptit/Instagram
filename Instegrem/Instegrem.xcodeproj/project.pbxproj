@@ -36,6 +36,8 @@
 		C774526D2A39C9710075AD96 /* UINavigationController-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C774526C2A39C9710075AD96 /* UINavigationController-Extension.swift */; };
 		C7872D5A2A3AD6DB00BC49BB /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D592A3AD6DB00BC49BB /* HomeModel.swift */; };
 		C7872D5D2A3AD72000BC49BB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D5C2A3AD72000BC49BB /* HomeViewModel.swift */; };
+		C7872D612A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D602A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift */; };
+		C7872D642A3AE64200BC49BB /* HomeViewController-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D632A3AE64200BC49BB /* HomeViewController-Extension.swift */; };
 		C78753A32A1BAAC800CC5CFA /* ProfileBottomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78753A12A1BAAC800CC5CFA /* ProfileBottomViewController.swift */; };
 		C78753A82A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78753A62A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.swift */; };
 		C78753A92A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C78753A72A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.xib */; };
@@ -113,6 +115,8 @@
 		C774526C2A39C9710075AD96 /* UINavigationController-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController-Extension.swift"; sourceTree = "<group>"; };
 		C7872D592A3AD6DB00BC49BB /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
 		C7872D5C2A3AD72000BC49BB /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		C7872D602A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeViewController-Extension-CollectionView.swift"; sourceTree = "<group>"; };
+		C7872D632A3AE64200BC49BB /* HomeViewController-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeViewController-Extension.swift"; sourceTree = "<group>"; };
 		C78753A12A1BAAC800CC5CFA /* ProfileBottomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBottomViewController.swift; sourceTree = "<group>"; };
 		C78753A62A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBottomCollectionViewCell.swift; sourceTree = "<group>"; };
 		C78753A72A1BB62200CC5CFA /* ProfileBottomCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileBottomCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -468,6 +472,8 @@
 			isa = PBXGroup;
 			children = (
 				C71A4FBA2A172990003F4B9D /* HomeViewController.swift */,
+				C7872D602A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift */,
+				C7872D632A3AE64200BC49BB /* HomeViewController-Extension.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -797,6 +803,8 @@
 				C79B65C72A244AE900765EAB /* CreateAccountViewController.swift in Sources */,
 				C71A4FA12A171B8F003F4B9D /* SceneDelegate.swift in Sources */,
 				C795B19E2A1DFFA50067F7D5 /* StorySavedCollectionViewCell.swift in Sources */,
+				C7872D612A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift in Sources */,
+				C7872D642A3AE64200BC49BB /* HomeViewController-Extension.swift in Sources */,
 				C7B9E5B72A23B5BA00D2E94D /* SignInViewController.swift in Sources */,
 				C715C5202A2F4FFC002C8DBD /* DetailPostViewController.swift in Sources */,
 				C77452622A3963530075AD96 /* ExploreViewController.swift in Sources */,

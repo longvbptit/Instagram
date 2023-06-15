@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+enum Section: Int {
+    case story
+    case post
+}
+
+struct Story {
+    var image: String = ""
+    var title: String = ""
+}

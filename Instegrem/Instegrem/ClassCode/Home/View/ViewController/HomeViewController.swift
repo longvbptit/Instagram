@@ -116,12 +116,9 @@ class HomeViewController: UIViewController {
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(300))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-//        group.interItemSpacing = .fixed(1.5)
         
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 10
-//        let layout = UICollectionViewCompositionalLayout(section: section)
-        
         return section
         
     }
@@ -132,12 +129,9 @@ class HomeViewController: UIViewController {
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(84), heightDimension: .absolute(100))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-//        group.interItemSpacing = .fixed(1.5)
         
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
-//        section.interGroupSpacing = 10
-//        let layout = UICollectionViewCompositionalLayout(section: section)
         
         return section
         
@@ -171,122 +165,5 @@ class HomeViewController: UIViewController {
     
     deinit {
         print("DEBUG: DEINIT HomeViewController")
-    }
-}
-
-extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        2
-    }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch Section(rawValue: section) {
-        case .story:
-            return 10
-        case .post:
-            return dataHome.count
-        default:
-            return 0
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch Section(rawValue: indexPath.section) {
-        case .story:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StorySavedCollectionViewCell", for: indexPath) as! StorySavedCollectionViewCell
-            if indexPath.row == 0 {
-                cell.addStoryImage.isHidden = false
-                cell.storyImage.sd_setImage(with: URL(string: user.avatar))
-            } else {
-                cell.storyImage.image = UIImage(named: story[indexPath.row].image)
-                cell.addStoryImage.isHidden = true
-            }
-            
-            cell.storyImage.cornerRadius = 32
-            cell.widthAddStory.constant = 64/3
-            cell.storyLabel.text = story[indexPath.row].title
-            cell.storyImage.contentMode = .scaleAspectFill
-            return cell
-        default:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCollectionViewCell.identifier, for: indexPath) as! PostCollectionViewCell
-            cell.indexPath = indexPath
-            cell.post = dataHome[indexPath.row]
-            cell.delegate = self
-            return cell
-        }
-       
-    }
-    
-}
-
-enum Section: Int {
-    case story
-    case post
-}
-
-extension HomeViewController: PostDelegate {
-    func gotoComment(indexPath: IndexPath) {
-        let vc = CommentViewController()
-        vc.post = dataHome[indexPath.row]
-        vc.indexPath = indexPath
-        vc.delegate = self
-        vc.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    func gotoLike(indexPath: IndexPath) {
-        let vc = LikeViewController()
-        vc.idPost = dataHome[indexPath.row].idPost
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    func gotoProfile(user: User) {
-        let vc = ProfileViewController()
-        vc.isOrigin = false
-        vc.user = user
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    func likePost(indexPath: IndexPath, isLike: Bool, numberOfLike: Int) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        if isLike {
-            HomeService.likeStatus(idPost: dataHome[indexPath.row].idPost, uid: uid, completion: { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
-            })
-        } else {
-            HomeService.unLikeStatus(idPost: dataHome[indexPath.row].idPost, uid: uid, completion: { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
-            })
-        }
-        dataHome[indexPath.row].isLiked = isLike
-        dataHome[indexPath.row].numberOfLike = numberOfLike
-        UIView.performWithoutAnimation {
-            collectionView.performBatchUpdates({
-                collectionView.reloadItems(at: [indexPath])
-            }, completion: nil)
-        }
-    }
-
-}
-
-struct Story {
-    var image: String = ""
-    var title: String = ""
-}
-
-extension HomeViewController: CommentPostDelegate {
-    func updateNumberOfCommentButton(indexPath: IndexPath, numberOfComment: Int) {
-        dataHome[indexPath.row].numberOfComment = numberOfComment
-        UIView.performWithoutAnimation {
-            collectionView.performBatchUpdates({
-                collectionView.reloadItems(at: [indexPath])
-            }, completion: nil)
-        }
     }
 }

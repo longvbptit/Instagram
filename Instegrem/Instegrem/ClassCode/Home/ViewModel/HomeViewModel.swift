@@ -20,4 +20,22 @@ class HomeViewModel {
             self?.completion?()
         })
     }
+    
+    func likePost(idPost: String, uid: String) {
+        HomeService.likeStatus(idPost: idPost, uid: uid, completion: { error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+        })
+    }
+    
+    func unLikePost(idPost: String, uid: String) {
+        HomeService.unLikeStatus(idPost: idPost, uid: uid, completion: { error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+        })
+    }
 }
