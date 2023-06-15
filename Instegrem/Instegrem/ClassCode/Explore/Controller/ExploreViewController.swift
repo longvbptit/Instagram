@@ -16,13 +16,12 @@ class ExploreViewController: UIViewController {
     var cancelButtonLeftAnchor: NSLayoutConstraint!
     var collectionView: UICollectionView!
     var users: [User] = []
-    var filteredUsers: [User] = []
     var posts: [Post] = []
     var dataCollection: ([User], [Post]) = ([], [])
     var collectionViewBottomAnchor: NSLayoutConstraint!
+    var viewModel: ExploreViewModel = ExploreViewModel()
     override func viewDidLoad() {
         super.viewDidLoad()
-//        hideKeyboardWhenTappedAround()
         view.backgroundColor = .systemBackground
         configUI()
         getAllPost()
@@ -110,12 +109,8 @@ class ExploreViewController: UIViewController {
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(12 + 56))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-//        group.interItemSpacing = .fixed(1.5)
         
         let section = NSCollectionLayoutSection(group: group)
-//        section.interGroupSpacing = 10
-//        let layout = UICollectionViewCompositionalLayout(section: section)
-        
         return section
         
     }
@@ -128,8 +123,8 @@ class ExploreViewController: UIViewController {
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(1/3))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         group.interItemSpacing = .fixed(1.5)
+        
         let section = NSCollectionLayoutSection(group: group)
-//        section.interGroupSpacing = 1
         return section
         
     }
@@ -146,25 +141,24 @@ class ExploreViewController: UIViewController {
     
     func searchUserbyName(key: String) {
         loadingView.startAnimating()
-        UserService.fetchUserByName(key: key, completion: { [weak self] users, error in
-            self?.users = users
+        viewModel.fetchUserByName(key: key)
+        viewModel.fetchUserCompletion = { [weak self] in
+            self?.users = self?.viewModel.dataUsers ?? []
             self?.dataCollection = (self?.users ?? [], [])
             self?.collectionView.reloadData()
             self?.loadingView.stopAnimating()
-        })
+        }
     }
     
     func getAllPost() {
         loadingView.startAnimating()
-        HomeService.fetchPost(completion: { [weak self] data, error in
-            if error != nil {
-                self?.posts = []
-            }
-            self?.posts = data
+        viewModel.fetchAllPost()
+        viewModel.fetchPostCompletion = { [weak self] in
+            self?.posts = self?.viewModel.dataPosts ?? []
             self?.dataCollection = ([], self?.posts ?? [])
             self?.collectionView.reloadData()
             self?.loadingView.stopAnimating()
-        })
+        }
     }
     
     @objc func cancelButtonTapped(_ sender: UIButton) {
@@ -272,11 +266,8 @@ extension ExploreViewController: FollowUserDelegate {
     
     func followUser(uid: String, indexPath: IndexPath) {
         if users[indexPath.row].isFollowByCurrentUser == .notFollowYet {
-            UserService.followUser(uid: uid, completion: { [weak self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
+            viewModel.followUser(uid: uid, completion: { [weak self] result in
+                if !result { return }
                 self?.users[indexPath.row].isFollowByCurrentUser = .followed
                 self?.dataCollection.0 = self?.users ?? []
                 self?.collectionView.performBatchUpdates({
@@ -284,11 +275,8 @@ extension ExploreViewController: FollowUserDelegate {
                 }, completion: nil)
             })
         } else {
-            UserService.unfollowUser(uid: uid, completion: { [weak self] error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
-                }
+            viewModel.unFollowUser(uid: uid, completion: { [weak self] result in
+                if !result { return }
                 self?.users[indexPath.row].isFollowByCurrentUser = .notFollowYet
                 self?.dataCollection.0 = self?.users ?? []
                 self?.collectionView.performBatchUpdates({

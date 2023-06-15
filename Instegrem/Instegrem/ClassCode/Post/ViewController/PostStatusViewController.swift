@@ -8,7 +8,7 @@
 import UIKit
 
 class PostStatusViewController: UIViewController {
-    
+    var viewModel: HomeViewModel = HomeViewModel()
     var postImage: UIImage!
     var ratio: CGFloat!
     var navigationBar: CustomNavigationBar!
@@ -17,7 +17,6 @@ class PostStatusViewController: UIViewController {
     var centerOriginImage: CGPoint!
     var tapImageGesture: UITapGestureRecognizer!
     var tapViewGesture: UITapGestureRecognizer!
-    
     var rightButton: UIButton!
     
     override func viewDidLoad() {
@@ -114,25 +113,7 @@ class PostStatusViewController: UIViewController {
     }
     
     @objc func postButtonTapped(_ sender: UIButton) {
-        rightButton.setTitle("", for: .normal)
-        let config = UIButton.Configuration.plain()
-        rightButton.configuration = config
-        rightButton.configuration?.showsActivityIndicator = true
-        HomeService.upLoadPost(status: postStatusTextView.textColor == UIColor.lightGray ? "" : postStatusTextView.text,
-                               postImage: postImage,
-                               completion: { [weak self] error in
-            guard let strongSelf = self else { return }
-            if let error = error {
-                strongSelf.rightButton.setTitle("Chia sẻ", for: .normal)
-                strongSelf.rightButton.configuration?.showsActivityIndicator = false
-                print("Can't crate post. Error: \(error)")
-                return
-            }
-            NotificationCenter.default.post(name: Notification.Name("PostNewStatus"), object: nil)
-            strongSelf.tabBarController?.selectedIndex = 0
-            strongSelf.navigationController?.popViewController(animated: false)
-            
-        })
+        uploadPost()
     }
     
     @objc func addImageTapGesture(_ gesture: UITapGestureRecognizer) {
@@ -161,6 +142,28 @@ class PostStatusViewController: UIViewController {
         }) { _ in
             self.view.removeGestureRecognizer(self.tapViewGesture)
             self.postImageView.addGestureRecognizer(self.tapImageGesture)
+        }
+    }
+    
+    func uploadPost() {
+        rightButton.setTitle("", for: .normal)
+        let config = UIButton.Configuration.plain()
+        rightButton.configuration = config
+        rightButton.configuration?.showsActivityIndicator = true
+        
+        let status = postStatusTextView.textColor == UIColor.lightGray ? "" : postStatusTextView.text ?? ""
+        viewModel.uploadPost(status: status, image: postImage)
+        viewModel.uploadPostCompletion = { [weak self] result in
+            guard let strongSelf = self else { return }
+            if !result {
+                strongSelf.rightButton.setTitle("Chia sẻ", for: .normal)
+                strongSelf.rightButton.configuration?.showsActivityIndicator = false
+                print("Can't crate post.")
+                return
+            }
+            NotificationCenter.default.post(name: Notification.Name("PostNewStatus"), object: nil)
+            strongSelf.tabBarController?.selectedIndex = 0
+            strongSelf.navigationController?.popViewController(animated: false)
         }
     }
     

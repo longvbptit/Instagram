@@ -46,7 +46,7 @@ class SignInViewController: UIViewController {
                 return
             }
             
-            print("DEBUG: \(authResult?.user.uid)")
+            print("DEBUG: \(String(describing: authResult?.user.uid))")
             (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(TabBarController())
             strongSelf.loginButton.configuration?.showsActivityIndicator = false
             
@@ -75,7 +75,6 @@ extension SignInViewController: UITextFieldDelegate {
         }
     
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        print("hih")
         return true
     }
 }

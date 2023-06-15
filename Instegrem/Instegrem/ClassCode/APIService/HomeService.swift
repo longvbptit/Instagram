@@ -14,7 +14,7 @@ class HomeService {
     static let db = Firestore.firestore()
     
     public static func upLoadPost(status: String, postImage: UIImage, completion: @escaping (Error?) -> Void) {
-        guard let imageData = postImage.jpegData(compressionQuality: 0.3) else { return }
+        guard let imageData = postImage.jpegData(compressionQuality: 0.5) else { return }
         
         let fileID = NSUUID().uuidString
         let ref = Storage.storage().reference().child(fileID)
