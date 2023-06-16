@@ -9,6 +9,8 @@ import UIKit
 import FirebaseAuth
 
 class HomeViewController: UIViewController {
+    
+    //MARK: - Attribute
     var navigationBar: CustomNavigationBar!
     var collectionView: UICollectionView!
     var user: User!
@@ -32,6 +34,7 @@ class HomeViewController: UIViewController {
                           Story(image: "ic-story8", title: "Tin 8"),
                           Story(image: "ic-story9", title: "Tin 9")]
     
+    //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configUI()
@@ -42,6 +45,15 @@ class HomeViewController: UIViewController {
 
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = true
+    }
+    
+    deinit {
+        print("DEBUG: DEINIT HomeViewController")
+    }
+    
+    //MARK: - @Objc
     @objc func scrollToTop(_ notification: Notification) {
         if let index = notification.object as? Int, index == 0 {
             if self.dataHome.count > 0 && collectionView.numberOfItems(inSection: 0) > 0 {
@@ -49,7 +61,7 @@ class HomeViewController: UIViewController {
             }
             if collectionView.contentOffset.y == -collectionView.contentInset.top {
                 refreshControl.beginRefreshing()
-                collectionView.setContentOffset(CGPoint(x: 0, y: -80), animated: true)
+                collectionView.setContentOffset(CGPoint(x: 0, y: -72), animated: true)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {[weak self] in
                     self?.reloadData()
                 })
@@ -57,10 +69,25 @@ class HomeViewController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.navigationBar.isHidden = true
+    @objc func reloadData() {
+        getCurrentUser()
+        fetchPosts()
     }
     
+    @objc func fetchPosts() {
+        if self.dataHome.count == 0 {
+            loadingView.startAnimating()
+        }
+        viewModel.fetchHomePost(user: user)
+        viewModel.completion = { [weak self] in
+            self?.loadingView.stopAnimating()
+            self?.refreshControl.endRefreshing()
+            self?.dataHome = self?.viewModel.dataHome ?? []
+            self?.collectionView.reloadData()
+        }
+    }
+    
+    //MARK: - Binding Data
     func bindingData() {
         fetchPosts()
     }
@@ -68,11 +95,6 @@ class HomeViewController: UIViewController {
     func getCurrentUser() {
         let tabbar = tabBarController as! TabBarController
         user = tabbar.user
-    }
-    
-    @objc func reloadData() {
-        getCurrentUser()
-        fetchPosts()
     }
     
     func configUI() {
@@ -93,8 +115,10 @@ class HomeViewController: UIViewController {
         firstLeftButton.setImage(UIImage(named: "ic-logo_text")?.withRenderingMode(.alwaysOriginal), for: .normal)
         
         let secondLeftButton = UIButton()
+        var config = UIButton.Configuration.plain()
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0)
+        secondLeftButton.configuration = config
         secondLeftButton.setImage(UIImage(named: "ic-arrow_down"), for: .normal)
-        secondLeftButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 12, right: 0)
         
         let firstRightButton = UIButton(type: .system)
         firstRightButton.setImage(UIImage(named: "ic-messenger")?.withRenderingMode(.alwaysOriginal), for: .normal)
@@ -154,7 +178,7 @@ class HomeViewController: UIViewController {
         
     }
     
-    private func createLayout() -> UICollectionViewLayout {
+    func createLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnviroment -> NSCollectionLayoutSection? in
             switch Section(rawValue: sectionIndex) {
             case .story:
@@ -166,21 +190,5 @@ class HomeViewController: UIViewController {
             }
         }
     }
-    
-    @objc func fetchPosts() {
-        if self.dataHome.count == 0 {
-            loadingView.startAnimating()
-        }
-        self.refreshControl.endRefreshing()
-        viewModel.fetchHomePost(user: user)
-        viewModel.completion = { [weak self] in
-            self?.loadingView.stopAnimating()
-            self?.dataHome = self?.viewModel.dataHome ?? []
-            self?.collectionView.reloadData()
-        }
-    }
-    
-    deinit {
-        print("DEBUG: DEINIT HomeViewController")
-    }
+
 }

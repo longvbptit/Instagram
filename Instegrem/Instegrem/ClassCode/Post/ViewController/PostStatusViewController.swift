@@ -8,6 +8,8 @@
 import UIKit
 
 class PostStatusViewController: UIViewController {
+    
+    //MARK: - Attribute
     var viewModel: HomeViewModel = HomeViewModel()
     var postImage: UIImage!
     var ratio: CGFloat!
@@ -19,6 +21,7 @@ class PostStatusViewController: UIViewController {
     var tapViewGesture: UITapGestureRecognizer!
     var rightButton: UIButton!
     
+    //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -33,6 +36,8 @@ class PostStatusViewController: UIViewController {
     deinit {
         print("DEBUG: DEINIT PostStatusViewController")
     }
+    
+    //MARK: - Configure UI
     func configUI() {
         let leftButton = UIButton()
         leftButton.setImage(UIImage(named: "ic-back_small"), for: .normal)
@@ -87,27 +92,7 @@ class PostStatusViewController: UIViewController {
         addSeparatorNav()
     }
     
-    func addSeparatorNav() {
-        let sepa = UIView()
-        navigationBar.addSubview(sepa)
-        sepa.backgroundColor = .gray
-        sepa.alpha = 0.3
-        sepa.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            sepa.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: -1),
-            sepa.leftAnchor.constraint(equalTo: view.leftAnchor),
-            sepa.rightAnchor.constraint(equalTo: view.rightAnchor),
-            sepa.heightAnchor.constraint(equalToConstant: 1)
-        ])
-    }
-    
-    func addTapGesture() {
-        centerOriginImage = postImageView.center
-        tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(addImageTapGesture(_:)))
-        tapViewGesture = UITapGestureRecognizer(target: self, action: #selector(addViewTapGesture(_:)))
-        postImageView.addGestureRecognizer(tapImageGesture)
-    }
-    
+    //MARK: - @Objc
     @objc func backButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
     }
@@ -143,6 +128,27 @@ class PostStatusViewController: UIViewController {
             self.view.removeGestureRecognizer(self.tapViewGesture)
             self.postImageView.addGestureRecognizer(self.tapImageGesture)
         }
+    }
+    
+    func addSeparatorNav() {
+        let sepa = UIView()
+        navigationBar.addSubview(sepa)
+        sepa.backgroundColor = .gray
+        sepa.alpha = 0.3
+        sepa.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            sepa.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: -1),
+            sepa.leftAnchor.constraint(equalTo: view.leftAnchor),
+            sepa.rightAnchor.constraint(equalTo: view.rightAnchor),
+            sepa.heightAnchor.constraint(equalToConstant: 1)
+        ])
+    }
+    
+    func addTapGesture() {
+        centerOriginImage = postImageView.center
+        tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(addImageTapGesture(_:)))
+        tapViewGesture = UITapGestureRecognizer(target: self, action: #selector(addViewTapGesture(_:)))
+        postImageView.addGestureRecognizer(tapImageGesture)
     }
     
     func uploadPost() {

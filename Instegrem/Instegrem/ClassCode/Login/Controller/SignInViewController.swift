@@ -10,12 +10,14 @@ import FirebaseAuth
 import IQKeyboardManagerSwift
 class SignInViewController: UIViewController {
     
+    //MARK: - IBOUTLET
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var backButton: UIButton!
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextFiled: UITextField!
     
+    //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         backButton.addTarget(self, action: #selector(backButtonTapped(_:)), for: .touchUpInside)
@@ -30,6 +32,7 @@ class SignInViewController: UIViewController {
         IQKeyboardManager.shared.enable = false
     }
     
+    //MARK: - @Objc
     @objc func backButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
     }
@@ -51,13 +54,10 @@ class SignInViewController: UIViewController {
             strongSelf.loginButton.configuration?.showsActivityIndicator = false
             
         }
-//        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(TabBarController())
     }
     
-    
-    
 }
-
+//MARK: - Extension
 extension SignInViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         print("change to \(String(describing: textField.text))")

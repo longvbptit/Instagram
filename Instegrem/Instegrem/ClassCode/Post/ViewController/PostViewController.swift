@@ -22,6 +22,7 @@ class PostViewController: UIViewController {
         print("DEBUG: DENINIT PostViewController")
     }
     
+    //MARK: - Configure UI
     func configUI() {
         let titleLabel = UILabel()
         titleLabel.text = "Tạo bài viết mới"
@@ -62,12 +63,17 @@ class PostViewController: UIViewController {
             
             cameraRollButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             cameraRollButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cameraRollButton.widthAnchor.constraint(equalToConstant: 150),
             
             cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             cameraButton.bottomAnchor.constraint(equalTo: cameraRollButton.topAnchor, constant: -32),
+            cameraButton.widthAnchor.constraint(equalToConstant: 150),
+
             
             libraryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            libraryButton.topAnchor.constraint(equalTo: cameraRollButton.bottomAnchor, constant: 32)
+            libraryButton.topAnchor.constraint(equalTo: cameraRollButton.bottomAnchor, constant: 32),
+            libraryButton.widthAnchor.constraint(equalToConstant: 150)
+
         ])
     }
     

@@ -37,7 +37,7 @@
 		C7872D5A2A3AD6DB00BC49BB /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D592A3AD6DB00BC49BB /* HomeModel.swift */; };
 		C7872D5D2A3AD72000BC49BB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D5C2A3AD72000BC49BB /* HomeViewModel.swift */; };
 		C7872D612A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D602A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift */; };
-		C7872D642A3AE64200BC49BB /* HomeViewController-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D632A3AE64200BC49BB /* HomeViewController-Extension.swift */; };
+		C7872D642A3AE64200BC49BB /* HomeViewController-Extension-Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D632A3AE64200BC49BB /* HomeViewController-Extension-Delegate.swift */; };
 		C7872D6A2A3B1C2B00BC49BB /* ExploreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D692A3B1C2B00BC49BB /* ExploreViewModel.swift */; };
 		C7872D6D2A3B434500BC49BB /* FollowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D6C2A3B434500BC49BB /* FollowViewModel.swift */; };
 		C7872D712A3B47AC00BC49BB /* LikeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7872D702A3B47AC00BC49BB /* LikeViewModel.swift */; };
@@ -51,6 +51,8 @@
 		C78CDE672A177A1C004835F7 /* UIView-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78CDE662A177A1C004835F7 /* UIView-Extension.swift */; };
 		C78CDE6A2A178243004835F7 /* IGActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78CDE692A178243004835F7 /* IGActivityIndicator.swift */; };
 		C78CDE6C2A17BE88004835F7 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78CDE6B2A17BE88004835F7 /* CustomNavigationBar.swift */; };
+		C78F5F9D2A3C58A600EEE013 /* ExploreViewController-Extension-ColletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78F5F9C2A3C58A600EEE013 /* ExploreViewController-Extension-ColletionView.swift */; };
+		C78F5F9F2A3C58C800EEE013 /* ExploreViewController-Extension-Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78F5F9E2A3C58C800EEE013 /* ExploreViewController-Extension-Delegate.swift */; };
 		C79215D62A31E883009E9404 /* LikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79215D52A31E883009E9404 /* LikeViewController.swift */; };
 		C79215DC2A31EC1D009E9404 /* LikeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79215DA2A31EC1D009E9404 /* LikeTableViewCell.swift */; };
 		C79215DD2A31EC1D009E9404 /* LikeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C79215DB2A31EC1D009E9404 /* LikeTableViewCell.xib */; };
@@ -120,7 +122,7 @@
 		C7872D592A3AD6DB00BC49BB /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
 		C7872D5C2A3AD72000BC49BB /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		C7872D602A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeViewController-Extension-CollectionView.swift"; sourceTree = "<group>"; };
-		C7872D632A3AE64200BC49BB /* HomeViewController-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeViewController-Extension.swift"; sourceTree = "<group>"; };
+		C7872D632A3AE64200BC49BB /* HomeViewController-Extension-Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeViewController-Extension-Delegate.swift"; sourceTree = "<group>"; };
 		C7872D692A3B1C2B00BC49BB /* ExploreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreViewModel.swift; sourceTree = "<group>"; };
 		C7872D6C2A3B434500BC49BB /* FollowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowViewModel.swift; sourceTree = "<group>"; };
 		C7872D702A3B47AC00BC49BB /* LikeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeViewModel.swift; sourceTree = "<group>"; };
@@ -134,6 +136,8 @@
 		C78CDE662A177A1C004835F7 /* UIView-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView-Extension.swift"; sourceTree = "<group>"; };
 		C78CDE692A178243004835F7 /* IGActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IGActivityIndicator.swift; sourceTree = "<group>"; };
 		C78CDE6B2A17BE88004835F7 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
+		C78F5F9C2A3C58A600EEE013 /* ExploreViewController-Extension-ColletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExploreViewController-Extension-ColletionView.swift"; sourceTree = "<group>"; };
+		C78F5F9E2A3C58C800EEE013 /* ExploreViewController-Extension-Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExploreViewController-Extension-Delegate.swift"; sourceTree = "<group>"; };
 		C79215D52A31E883009E9404 /* LikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeViewController.swift; sourceTree = "<group>"; };
 		C79215DA2A31EC1D009E9404 /* LikeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeTableViewCell.swift; sourceTree = "<group>"; };
 		C79215DB2A31EC1D009E9404 /* LikeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LikeTableViewCell.xib; sourceTree = "<group>"; };
@@ -413,7 +417,7 @@
 			path = APIService;
 			sourceTree = "<group>";
 		};
-		C7598F8A2A259EC600C37AFB /* Other */ = {
+		C7598F8A2A259EC600C37AFB /* Others */ = {
 			isa = PBXGroup;
 			children = (
 				C78753A12A1BAAC800CC5CFA /* ProfileBottomViewController.swift */,
@@ -422,7 +426,7 @@
 				C764B7472A21AF0B0013ED40 /* ProfileAddAccountViewController.swift */,
 				C715C51F2A2F4FFC002C8DBD /* DetailPostViewController.swift */,
 			);
-			path = Other;
+			path = Others;
 			sourceTree = "<group>";
 		};
 		C774525F2A3963160075AD96 /* Explore */ = {
@@ -439,6 +443,8 @@
 			isa = PBXGroup;
 			children = (
 				C77452612A3963530075AD96 /* ExploreViewController.swift */,
+				C78F5F9C2A3C58A600EEE013 /* ExploreViewController-Extension-ColletionView.swift */,
+				C78F5F9E2A3C58C800EEE013 /* ExploreViewController-Extension-Delegate.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -482,7 +488,7 @@
 			children = (
 				C71A4FBA2A172990003F4B9D /* HomeViewController.swift */,
 				C7872D602A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift */,
-				C7872D632A3AE64200BC49BB /* HomeViewController-Extension.swift */,
+				C7872D632A3AE64200BC49BB /* HomeViewController-Extension-Delegate.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -549,7 +555,7 @@
 			children = (
 				C78CDE622A176FEB004835F7 /* ProfileViewController.swift */,
 				C78CDE632A176FEB004835F7 /* ProfileViewController.xib */,
-				C7598F8A2A259EC600C37AFB /* Other */,
+				C7598F8A2A259EC600C37AFB /* Others */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -842,6 +848,7 @@
 				C7E2E3342A1FC43800DF0754 /* ProfileMoreViewController.swift in Sources */,
 				C78CDE6C2A17BE88004835F7 /* CustomNavigationBar.swift in Sources */,
 				C7924DEC2A32FBEB000756A0 /* CustomCommentView.swift in Sources */,
+				C78F5F9F2A3C58C800EEE013 /* ExploreViewController-Extension-Delegate.swift in Sources */,
 				C7872D6A2A3B1C2B00BC49BB /* ExploreViewModel.swift in Sources */,
 				C740F7AC2A32BD5600B58DB1 /* StatusTableViewCell.swift in Sources */,
 				C7872D5D2A3AD72000BC49BB /* HomeViewModel.swift in Sources */,
@@ -854,13 +861,14 @@
 				C7357D1F2A25F09C00070A20 /* AuthService.swift in Sources */,
 				C7A6CA752A273C33001F7D5E /* ProfileChangeAvatarViewController.swift in Sources */,
 				C7872D742A3B4BE900BC49BB /* CommentViewModel.swift in Sources */,
+				C78F5F9D2A3C58A600EEE013 /* ExploreViewController-Extension-ColletionView.swift in Sources */,
 				C7D155BD2A26EC51007073AA /* UILabel-Extension.swift in Sources */,
 				C79B65C72A244AE900765EAB /* CreateAccountViewController.swift in Sources */,
 				C71A4FA12A171B8F003F4B9D /* SceneDelegate.swift in Sources */,
 				C795B19E2A1DFFA50067F7D5 /* StorySavedCollectionViewCell.swift in Sources */,
 				C7872D6D2A3B434500BC49BB /* FollowViewModel.swift in Sources */,
 				C7872D612A3AE33200BC49BB /* HomeViewController-Extension-CollectionView.swift in Sources */,
-				C7872D642A3AE64200BC49BB /* HomeViewController-Extension.swift in Sources */,
+				C7872D642A3AE64200BC49BB /* HomeViewController-Extension-Delegate.swift in Sources */,
 				C7B9E5B72A23B5BA00D2E94D /* SignInViewController.swift in Sources */,
 				C715C5202A2F4FFC002C8DBD /* DetailPostViewController.swift in Sources */,
 				C77452622A3963530075AD96 /* ExploreViewController.swift in Sources */,

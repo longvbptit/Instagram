@@ -9,9 +9,11 @@ import UIKit
 import IQKeyboardManagerSwift
 class LoginViewController: UIViewController {
 
+    //MARK: - IBOUTLET
     @IBOutlet weak var createAccButton: UIButton!
     @IBOutlet weak var loginButton: UIButton!
     
+    //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         createAccButton.addTarget(self, action: #selector(createAccButtonTapped(_:)), for: .touchUpInside)
@@ -23,6 +25,7 @@ class LoginViewController: UIViewController {
         navigationController?.navigationBar.isHidden = true
     }
 
+    //MARK: - @Objc
     @objc func createAccButtonTapped(_ sender: UIButton) {
         let vc = CreateAccountViewController()
         navigationController?.pushViewController(vc, animated: true)

@@ -8,14 +8,18 @@
 import UIKit
 
 class UserCollectionViewCell: UICollectionViewCell {
-
+    
+    //MARK: - IBOUTLET
     @IBOutlet weak var followButton: UIButton!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var avatarImage: UIImageView!
+    
+    //MARK: - Attribute
     var user: User!
     weak var delegate: FollowUserDelegate!
     var indexPath: IndexPath!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -51,6 +55,7 @@ class UserCollectionViewCell: UICollectionViewCell {
             
         }
     }
+    
     @IBAction func followButtonTapped(_ sender: UIButton) {
         delegate.followUser(uid: user.uid, indexPath: indexPath)
     }

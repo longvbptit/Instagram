@@ -8,6 +8,8 @@
 import UIKit
 
 class ExploreViewController: UIViewController {
+    
+    //MARK: - Attribute
     var loadingView: UIActivityIndicatorView = UIActivityIndicatorView()
     var searchView: UIView!
     var searchBar: UISearchBar!
@@ -20,6 +22,8 @@ class ExploreViewController: UIViewController {
     var dataCollection: ([User], [Post]) = ([], [])
     var collectionViewBottomAnchor: NSLayoutConstraint!
     var viewModel: ExploreViewModel = ExploreViewModel()
+    var timer: Timer?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -60,6 +64,10 @@ class ExploreViewController: UIViewController {
         cancelButton.setTitleColor(.black, for: .normal)
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped(_:)), for: .touchUpInside)
+        var config = UIButton.Configuration.plain()
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        cancelButton.configuration = config
+        
         searchView.addSubview(cancelButton)
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         cancelButtonLeftAnchor = cancelButton.leftAnchor.constraint(equalTo: view.rightAnchor, constant: 0)
@@ -144,13 +152,18 @@ class ExploreViewController: UIViewController {
     }
     
     func searchUserbyName(key: String) {
-        loadingView.startAnimating()
+        cancelButton.setTitle("", for: .normal)
+        
+        cancelButton.configuration?.showsActivityIndicator = true
+        if users.isEmpty { loadingView.startAnimating() }
         viewModel.fetchUserByName(key: key)
         viewModel.fetchUserCompletion = { [weak self] in
             self?.users = self?.viewModel.dataUsers ?? []
             self?.dataCollection = (self?.users ?? [], [])
             self?.collectionView.reloadData()
             self?.loadingView.stopAnimating()
+            self?.cancelButton.setTitle("Hủy", for: .normal)
+            self?.cancelButton.configuration?.showsActivityIndicator = false
         }
     }
     
@@ -195,94 +208,4 @@ class ExploreViewController: UIViewController {
         })
     }
     
-}
-
-extension ExploreViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        2
-    }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            return isSearching ? dataCollection.0.count : 0
-        } else {
-            return !isSearching ? dataCollection.1.count : 0
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.section == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "UserCollectionViewCell", for: indexPath) as! UserCollectionViewCell
-            cell.user = dataCollection.0[indexPath.row]
-            cell.indexPath = indexPath
-            cell.delegate = self
-            cell.updateData()
-            cell.updateFollowButton()
-            return cell
-        } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileBottomCollectionViewCell", for: indexPath) as! ProfileBottomCollectionViewCell
-            cell.image.sd_setImage(with: URL(string: dataCollection.1[indexPath.row].postImage.image))
-            return cell
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            let vc = ProfileViewController()
-            vc.isOrigin = false
-            vc.user = dataCollection.0[indexPath.row]
-            navigationController?.pushViewController(vc, animated: true)
-        } else {
-            let vc = DetailPostViewController()
-            vc.posts = dataCollection.1
-            vc.naviationBarTitle = "Explore"
-            vc.indexPath = indexPath
-            navigationController?.pushViewController(vc, animated: true)
-        }
-    }
-    
-    
-}
-
-extension ExploreViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchUserbyName(key: searchText)
-    }
-    
-    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        self.dataCollection = (self.users, [])
-        self.collectionView.reloadData()
-        if !isSearching {
-            searchUserbyName(key: "")
-        }
-        isSearching = true
-        UIView.animate(withDuration: 0.3, animations: {
-            self.cancelButtonLeftAnchor.constant = -40
-            self.view.layoutIfNeeded()
-        })
-        return true
-    }
-}
-
-extension ExploreViewController: FollowUserDelegate {
-    func followUser(uid: String, indexPath: IndexPath) {
-        if users[indexPath.row].isFollowByCurrentUser == .notFollowYet {
-            viewModel.followUser(uid: uid, completion: { [weak self] result in
-                if !result { return }
-                self?.users[indexPath.row].isFollowByCurrentUser = .followed
-                self?.dataCollection.0 = self?.users ?? []
-                self?.collectionView.performBatchUpdates({
-                    self?.collectionView.reloadItems(at: [indexPath])
-                }, completion: nil)
-            })
-        } else {
-            viewModel.unFollowUser(uid: uid, completion: { [weak self] result in
-                if !result { return }
-                self?.users[indexPath.row].isFollowByCurrentUser = .notFollowYet
-                self?.dataCollection.0 = self?.users ?? []
-                self?.collectionView.performBatchUpdates({
-                    self?.collectionView.reloadItems(at: [indexPath])
-                }, completion: nil)
-            })
-        }
-    }
 }

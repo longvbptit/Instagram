@@ -12,6 +12,7 @@ import IQKeyboardManagerSwift
 
 class CreateAccountViewController: UIViewController {
 
+    //MARK: - IBOUTLET
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var backButton: UIButton!
     
@@ -20,8 +21,11 @@ class CreateAccountViewController: UIViewController {
     
     @IBOutlet weak var nameTextFiled: UITextField!
     @IBOutlet weak var userNameTextField: UITextField!
+    
+    //MARK: - Attribute
     var db: Firestore!
     
+    //MARK: - View Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         backButton.addTarget(self, action: #selector(backButtonTapped(_:)), for: .touchUpInside)
@@ -39,6 +43,7 @@ class CreateAccountViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    //MARK: - @Objc
     @objc func loginButtonTapped(_ sender: UIButton) {
         loginButton.configuration?.showsActivityIndicator = true
 
