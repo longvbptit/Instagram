@@ -31,7 +31,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "StorySavedCollectionViewCell", for: indexPath) as! StorySavedCollectionViewCell
             if indexPath.row == 0 {
                 cell.addStoryImage.isHidden = false
-                cell.storyImage.sd_setImage(with: URL(string: user.avatar))
+                cell.storyImage.sd_setImage(with: URL(string: user.avatar), placeholderImage: UIImage(named: "ic-avatar_default"))
             } else {
                 cell.storyImage.image = UIImage(named: story[indexPath.row].image)
                 cell.addStoryImage.isHidden = true

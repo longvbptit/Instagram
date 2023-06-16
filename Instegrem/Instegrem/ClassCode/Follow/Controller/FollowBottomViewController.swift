@@ -145,17 +145,23 @@ extension FollowBottomViewController: UITableViewDelegate, UITableViewDataSource
 }
 
 extension FollowBottomViewController: FollowUserDelegate {
+    
     func removeFollower(uid: String, indexPath: IndexPath) {
-        viewModel.removeFollower(uid: uid, completion: { [weak self] result in
-            if !result { return }
-            if indexPath.row >= 0 && indexPath.row < self?.users.count ?? 0 {
-                self?.users.remove(at: indexPath.row)
-                self?.delegate?.updatefollower(num: self?.users.count ?? 0)
-                self?.tableView.beginUpdates()
-                self?.tableView.deleteRows(at: [indexPath], with: .automatic)
-                self?.tableView.endUpdates()
-            }
-        })
+        let alertController = UIAlertController(title: "Xóa người theo dõi?", message: "\(users[indexPath.row].userName) sẽ không biết bạn đã xóa họ khỏi danh sách người theo dõi mình.", preferredStyle: .alert)
+        let remove = UIAlertAction(title: "Gỡ", style: .default) { [weak self] _ in
+            self?.viewModel.removeFollower(uid: uid, completion: { [weak self] result in
+                if !result { return }
+                if indexPath.row >= 0 && indexPath.row < self?.users.count ?? 0 {
+                    self?.users.remove(at: indexPath.row)
+                    self?.delegate?.updatefollower(num: self?.users.count ?? 0)
+                    self?.tableView.reloadData()
+                }
+            })
+        }
+        let cancel = UIAlertAction(title: "Hủy", style: .cancel)
+        alertController.addAction(remove)
+        alertController.addAction(cancel)
+        present(alertController, animated: true, completion: nil)
     }
     
     func followUser(uid: String, indexPath: IndexPath) {

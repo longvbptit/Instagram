@@ -253,7 +253,6 @@ class HomeService {
                 return
             }
             guard let currentUID = Auth.auth().currentUser?.uid else { return }
-            var countComment = 0
             var comments: [Comment] = []
             for (_, dataComment) in data {
                 guard let arr = dataComment as? [Any] else { return }
@@ -263,21 +262,20 @@ class HomeService {
                         completion([], error)
                         return
                     }
-                    countComment += 1
                     var user = User(uid: uid, dictionary: dataUser)
                     if user.uid != currentUID {
                         UserService.checkFollowedByCurrenUser(uid: user.uid, completion: { isFollowed, error in
                             user.isFollowByCurrentUser = isFollowed ? .followed : .notFollowYet
                             let comment = Comment(user: user, arr: arr)
                             comments.append(comment)
-                            if countComment == data.count {
+                            if comments.count == data.count {
                                 completion(comments, nil)
                             }
                         })
                     } else {
                         let comment = Comment(user: user, arr: arr)
                         comments.append(comment)
-                        if countComment == data.count {
+                        if comments.count == data.count {
                             completion(comments, nil)
                         }
                     }
