@@ -206,6 +206,7 @@ class HomeService {
             }
             guard let uid = Auth.auth().currentUser?.uid else { return }
             var users: [User] = []
+            if data.isEmpty { completion(users, nil); return }
             for (idUser, _) in data {
                 UserService.getUser(uid: idUser, completion: { dataUser, err in
                     if let error = err {

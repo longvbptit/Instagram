@@ -120,6 +120,7 @@ class ProfileViewController: UIViewController {
         }
         setUpLoadingView()
         bindingData()
+        NotificationCenter.default.addObserver(self, selector: #selector(getPosts), name: Notification.Name("PostNewStatus"), object: nil)
     }
     
     func getUser() {
@@ -177,7 +178,7 @@ class ProfileViewController: UIViewController {
         }
     }
     
-    func getPosts() {
+    @objc func getPosts() {
         if posts.count == 0 {
             view.bringSubviewToFront(loadingView)
             loadingView.startAnimating()

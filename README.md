@@ -55,7 +55,8 @@ In this repository, I try my best to mimic the key features of the Instagram. I 
 <!-- Features -->
 ## Features
 
-- Login and Signup Screen: 
+- Login and Signup Screen:
+  - Login using Email and Password
   - Allow user to log in if they already have an account or create a new one.
 - Home Screen:
   - View all posts from users that you are following.
@@ -134,6 +135,7 @@ pod install
 5. Delete file `GoogleService-Info.plist` and change the bundle Id.
 
 ## Upcoming Features
+- Login by FaceBook
 - Dark Mode
 - Notifications for likes, comments, follow, etc.
 - Add stories.
