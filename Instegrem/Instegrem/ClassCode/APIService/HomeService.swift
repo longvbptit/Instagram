@@ -11,6 +11,7 @@ import FirebaseStorage
 import FirebaseAuth
 
 class HomeService {
+    
     static let db = Firestore.firestore()
     
     public static func upLoadPost(status: String, postImage: UIImage, completion: @escaping (Error?) -> Void) {
